@@ -9,13 +9,13 @@ export enum CommandFlags {
 
 type CommandThis<F, R, B> = Readonly<F> & Command<F, R, B>;
 
-interface Command<F extends NonNullable<any>, R, B> {
+export interface Command<F extends NonNullable<any>, R, B> {
     method: XHRMethod;
     flags: CommandFlags,
 
     perms(this: CommandThis<F, R, B>): number;
     path(this: CommandThis<F, R, B>): string;
-    headers(this: CommandThis<F, R, B>): Array<{ [name: string]: string }>,
+    headers(this: CommandThis<F, R, B>): { [name: string]: string },
     body(this: CommandThis<F, R, B>): B;
     parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | undefined;
 }
@@ -25,7 +25,7 @@ const DEFAULT: Command<any, any, any> = {
     flags: CommandFlags.NONE,
     perms: () => 0,
     path: () => "",
-    headers: () => [],
+    headers: () => ({}),
     body: () => null,
     parse: () => null,
 }
