@@ -86,7 +86,8 @@ export enum Intent {
     ALL_MOBILE = Intent.ALL_DESKTOP & ~Intent.PRESENCE, // TODO: Add more
 }
 
-export type Snowflake = string;
+/// Snowflakes cannot be 0
+export type Snowflake = Exclude<string, "0" | 0>;
 
 export enum UserFlags {
     Deleted = 1 << 0,

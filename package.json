@@ -2,5 +2,8 @@
   "name": "client-sdk-ts",
   "version": "0.0.1",
   "license": "GPL-3.0-only",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
 }
