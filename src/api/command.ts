@@ -1,5 +1,5 @@
 import { XHRMethod } from "lib/fetch";
-import { Permission, union } from "models/permission";
+import { EMPTY, Permission, union } from "models/permission";
 
 export enum CommandFlags {
     NONE = 0,
@@ -21,20 +21,10 @@ export interface Command<F extends NonNullable<any>, R, B> {
     parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | null;
 }
 
-const DEFAULT: Command<any, any, any> = {
-    method: XHRMethod.GET,
-    flags: CommandFlags.NONE,
-    perms: () => union(),
-    path: () => "",
-    headers: () => ({}),
-    body: () => null,
-    parse: () => null,
-}
-
 function defaultParse<B>(req: XMLHttpRequest): B | null {
     if(req.responseType == 'json') {
         return req.response;
-    } else if(req.responseText != '') {
+    } else if(req.responseType == '' || req.responseType == 'text') {
         return JSON.parse(req.responseText);
     } else {
         return null;
@@ -45,6 +35,16 @@ function defaultParse<B>(req: XMLHttpRequest): B | null {
 export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms' | 'path'> {
     perms: Partial<Permission> | ((this: CommandThis<F, R, B>) => Permission);
     path: string | ((this: CommandThis<F, R, B>) => string);
+}
+
+const DEFAULT: Command<any, any, any> = {
+    method: XHRMethod.GET,
+    flags: CommandFlags.NONE,
+    perms: () => EMPTY,
+    path: () => "",
+    headers: () => ({}),
+    body: () => null,
+    parse: () => null,
 }
 
 /// methods that automatically parse the body
