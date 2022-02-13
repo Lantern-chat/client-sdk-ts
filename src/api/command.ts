@@ -1,4 +1,5 @@
 import { XHRMethod } from "lib/fetch";
+import { expand, Permission } from "models/permission";
 
 export enum CommandFlags {
     NONE = 0,
@@ -13,37 +14,48 @@ export interface Command<F extends NonNullable<any>, R, B> {
     method: XHRMethod;
     flags: CommandFlags,
 
-    perms(this: CommandThis<F, R, B>): number;
+    perms(this: CommandThis<F, R, B>): Permission;
     path(this: CommandThis<F, R, B>): string;
     headers(this: CommandThis<F, R, B>): { [name: string]: string },
     body(this: CommandThis<F, R, B>): B;
-    parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | undefined;
+    parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | null;
 }
 
 const DEFAULT: Command<any, any, any> = {
     method: XHRMethod.GET,
     flags: CommandFlags.NONE,
-    perms: () => 0,
+    perms: () => expand({}),
     path: () => "",
     headers: () => ({}),
     body: () => null,
     parse: () => null,
 }
 
-function defaultParse<B>(req: XMLHttpRequest): B | undefined {
+function defaultParse<B>(req: XMLHttpRequest): B | null {
     if(req.responseType == 'json') {
         return req.response;
     } else if(req.responseText != '') {
         return JSON.parse(req.responseText);
+    } else {
+        return null;
     }
-    return;
 }
 
-export function command<F, R = null, B = null>(template: Partial<Command<F, R, B>>): (fields: Readonly<F>) => Readonly<F> & Command<F, R, B> {
+// TODO: Better way to do this?
+export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms'> {
+    perms: Partial<Permission> | ((this: CommandThis<F, R, B>) => Permission);
+}
+
+export function command<F, R = null, B = null>(template: Partial<CommandTemplate<F, R, B>>): (fields: Readonly<F>) => Readonly<F> & Command<F, R, B> {
     let full_template: Command<F, R, B> = Object.assign({}, DEFAULT, template);
 
     if(template.body) {
         full_template.flags |= CommandFlags.HAS_BODY;
+    }
+
+    if(template.perms && typeof template.perms !== 'function') {
+        let perms = expand(template.perms);
+        full_template.perms = () => perms;
     }
 
     if(template.parse) {

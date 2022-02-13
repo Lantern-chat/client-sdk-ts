@@ -1,5 +1,4 @@
-import { Command } from "api/command";
-import { GetMessage } from "api/commands/room";
+import { Command, CommandFlags } from "api/command";
 import { fetch } from "lib/fetch";
 
 export class Driver {
@@ -17,6 +16,12 @@ export class Driver {
             headers: cmd.headers(),
         });
 
-        return void 0 as any;
+        let result = cmd.parse(response);
+
+        if(!result && (cmd.flags & CommandFlags.HAS_RESPONSE)) {
+            // TODO: Error
+        }
+
+        return result!;
     }
 }

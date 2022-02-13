@@ -358,17 +358,8 @@ export interface Invite {
     description: string,
 }
 
-export interface Permission {
-    party: number,
-    room: number,
-    stream: number,
-}
-
-export interface Overwrite {
-    id: Snowflake,
-    allow?: Permission,
-    deny?: Permission,
-}
+import { Permission, Overwrite } from "./permission";
+export { Permission, Overwrite } from "./permission";
 
 export interface Role {
     id: Snowflake,
