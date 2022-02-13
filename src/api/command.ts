@@ -1,5 +1,5 @@
 import { XHRMethod } from "lib/fetch";
-import { expand, Permission } from "models/permission";
+import { Permission, union } from "models/permission";
 
 export enum CommandFlags {
     NONE = 0,
@@ -24,7 +24,7 @@ export interface Command<F extends NonNullable<any>, R, B> {
 const DEFAULT: Command<any, any, any> = {
     method: XHRMethod.GET,
     flags: CommandFlags.NONE,
-    perms: () => expand({}),
+    perms: () => union(),
     path: () => "",
     headers: () => ({}),
     body: () => null,
@@ -58,7 +58,7 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
     }
 
     if(template.perms && typeof template.perms !== 'function') {
-        let perms = expand(template.perms);
+        let perms = union(template.perms);
         full_template.perms = () => perms;
     }
 

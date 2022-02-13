@@ -90,12 +90,8 @@ export function difference(a: Permission, b: Permission): Permission {
     }
 }
 
-export function expand(p: Partial<Permission>): Permission {
-    return union(p, EMPTY);
-}
-
 export function cond(value: boolean, p: Partial<Permission>): Partial<Permission> {
-    return value ? expand(p) : EMPTY;
+    return value ? union(p) : EMPTY;
 }
 
 export type PermissionName = keyof typeof RoomPermissions | keyof typeof PartyPermissions | keyof typeof StreamPermissions;
