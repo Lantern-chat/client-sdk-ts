@@ -16,7 +16,7 @@ export interface XHRParameters {
     body?: Document | XMLHttpRequestBodyInit,
     method?: XHRMethod,
     timeout?: number,
-    bearer?: string,
+    bearer?: string | null,
     onprogress?: (this: XMLHttpRequest, ev: ProgressEvent) => any;
     headers?: { [header: string]: string },
     json?: any,

@@ -28,6 +28,8 @@ export enum PartyPermissions {
     MOVE_MEMBERS = 1 << 12,
     CHANGE_NICKNAME = 1 << 13,
     MANAGE_PERMS = 1 << 14,
+
+    PARTY_ALL = (1 << 15) - 1,
 }
 
 export enum RoomPermissions {
@@ -45,6 +47,8 @@ export enum RoomPermissions {
     USE_SLASH_COMMANDS = 1 << 11,
     SEND_TTS_MESSAGES = 1 << 12,
     EDIT_NEW_ATTACHMENT = 1 << 13,
+
+    ROOM_ALL = (1 << 14) - 1,
 }
 
 export enum StreamPermissions {
@@ -56,6 +60,8 @@ export enum StreamPermissions {
     SPEAK = 1 << 2,
     /// Allows a user to acquire priority speaker
     PRIORITY_SPEAKER = 1 << 3,
+
+    STREAM_ALL = (1 << 4) - 1,
 }
 
 export const P = PartyPermissions;

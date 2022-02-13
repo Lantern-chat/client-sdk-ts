@@ -42,9 +42,13 @@ function defaultParse<B>(req: XMLHttpRequest): B | null {
 }
 
 // TODO: Better way to do this?
-export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms'> {
+export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms' | 'path'> {
     perms: Partial<Permission> | ((this: CommandThis<F, R, B>) => Permission);
+    path: string | ((this: CommandThis<F, R, B>) => string);
 }
+
+/// methods that automatically parse the body
+const GET_METHODS: Array<XHRMethod> = [XHRMethod.GET, XHRMethod.OPTIONS]
 
 export function command<F, R = null, B = null>(template: Partial<CommandTemplate<F, R, B>>): (fields: Readonly<F>) => Readonly<F> & Command<F, R, B> {
     let full_template: Command<F, R, B> = Object.assign({}, DEFAULT, template);
@@ -58,9 +62,14 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
         full_template.perms = () => perms;
     }
 
+    if(template.path && typeof template.path === 'string') {
+        let path = template.path;
+        full_template.path = () => path;
+    }
+
     if(template.parse) {
         full_template.flags |= CommandFlags.HAS_RESPONSE;
-    } else if(full_template.method == XHRMethod.GET) {
+    } else if(GET_METHODS.indexOf(full_template.method) != -1) {
         // If method is GET, assume there is a body.
         full_template.parse = defaultParse;
         full_template.flags |= CommandFlags.HAS_RESPONSE;
