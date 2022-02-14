@@ -13,7 +13,7 @@ export interface CreateMessageBody {
 export const CreateMessage = command.post<{ room_id: Snowflake, msg: CreateMessageBody }, Message, CreateMessageBody>({
     parse: command.parse,
     path() { return `/room/${this.room_id}/messages`; },
-    body() { return this.msg; },
+    body: "msg",
     perms() {
         return perms.union(
             { room: R.SEND_MESSAGES },
@@ -34,10 +34,10 @@ export interface GetMessagesBody {
     limit?: number
 }
 
-export const GetMessages = command<{ room_id: Snowflake, query?: GetMessagesBody }, Array<Message>, GetMessagesBody>({
+export const GetMessages = command<{ room_id: Snowflake, query: GetMessagesBody }, Array<Message>, GetMessagesBody>({
     perms: { room: R.READ_MESSAGES },
     path() { return `/room/${this.room_id}/messages`; },
-    body() { return this.query || {}; }
+    body: "query",
 });
 
 export const StartTyping = command.post<{ room_id: Snowflake }>({

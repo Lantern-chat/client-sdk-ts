@@ -12,7 +12,7 @@ export interface CreateFileBody {
 
 export const CreateFile = command.post<{ params: CreateFileBody }, Snowflake, CreateFileBody>({
     path: "/file",
-    body() { return this.params; }
+    body: "params",
 });
 
 export const GetFilesystemStatus = command.options<{}, FilesystemStatus>({

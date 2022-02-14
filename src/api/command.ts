@@ -37,10 +37,18 @@ function defaultParse<B>(req: XMLHttpRequest): B | null {
     }
 }
 
+// https://stackoverflow.com/a/49752227/2083075
+// Keys of F to fields that are a subtype of B
+type BodyKeys<F, B> = keyof { [P in keyof F as F[P] extends B ? P : never]: any }
+
 // TODO: Better way to do this?
-export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms' | 'path'> {
+export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms' | 'path' | 'body'> {
+    // object literal of callback
     perms: Partial<Permission> | ((this: CommandThis<F, R, B>) => Permission);
+    // string literal or callback
     path: string | ((this: CommandThis<F, R, B>) => string);
+    // Either key to a field or callback
+    body: BodyKeys<F, B> | ((this: CommandThis<F, R, B>) => B);
 }
 
 const DEFAULT: Command<any, any, any> = {
@@ -80,6 +88,12 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
     if(template.path && typeof template.path === 'string') {
         let path = template.path;
         full_template.path = () => path;
+    }
+
+    if(template.body && typeof template.body === 'string') {
+        let field = template.body;
+        // TODO: Figure out how to reconcile this[field]
+        full_template.body = function() { return this[field as any]; };
     }
 
     if(template.parse) {
