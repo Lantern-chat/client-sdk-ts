@@ -1,5 +1,4 @@
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export enum Intent {
     PARTIES = 1 << 0,
@@ -297,6 +296,8 @@ export interface Invite {
 
 import { Permission, Overwrite } from "./permission";
 export { Permission, Overwrite } from "./permission";
+
+export * as perms from "./permission";
 
 export interface Role {
     id: Snowflake,

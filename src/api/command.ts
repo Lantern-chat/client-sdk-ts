@@ -10,6 +10,13 @@ export enum CommandFlags {
 
 type CommandThis<F, R, B> = Readonly<F> & Command<F, R, B>;
 
+/**
+ * Abstract Command interface
+ *
+ * @typeparam F Fields
+ * @typeparam R Return type
+ * @typeparam B Body type
+ */
 export interface Command<F extends NonNullable<any>, R, B> {
     method: XHRMethod;
     flags: CommandFlags,
@@ -22,12 +29,11 @@ export interface Command<F extends NonNullable<any>, R, B> {
 }
 
 function defaultParse<B>(req: XMLHttpRequest): B | null {
-    if(req.responseType == 'json') {
-        return req.response;
-    } else if(req.responseType == '' || req.responseType == 'text') {
-        return JSON.parse(req.responseText);
-    } else {
-        return null;
+    switch(req.responseType) {
+        case 'json': return req.response;
+        case '':
+        case 'text': return JSON.parse(req.responseText);
+        default: return null;
     }
 }
 
@@ -48,9 +54,18 @@ const DEFAULT: Command<any, any, any> = {
 }
 
 /// methods that automatically parse the body
-const GET_METHODS: Array<XHRMethod> = [XHRMethod.GET, XHRMethod.OPTIONS]
+const GET_METHODS: Array<XHRMethod> = [XHRMethod.GET, XHRMethod.OPTIONS];
 
-export function command<F, R = null, B = null>(template: Partial<CommandTemplate<F, R, B>>): (fields: Readonly<F>) => Readonly<F> & Command<F, R, B> {
+/**
+ * Created command instance combined with given fields.
+ *
+ * @typeparam F Fields
+ * @typeparam R Return type
+ * @typeparam B Body type
+ */
+export type CommandInstance<F, R, B> = Readonly<F> & Command<F, R, B>;
+
+export function command<F, R = null, B = null>(template: Partial<CommandTemplate<F, R, B>>): (fields: Readonly<F>) => CommandInstance<F, R, B> {
     let full_template: Command<F, R, B> = Object.assign({}, DEFAULT, template);
 
     if(template.body) {

@@ -60,7 +60,7 @@ export enum ApiErrorCode {
     Unknown = 1,
 }
 
-export enum ErrorKind {
+export enum ApiErrorKind {
     Unknown,
     ServerError,
     ClientError,
@@ -81,27 +81,27 @@ export class ApiError {
     }
 
     is_client(): boolean {
-        return this.kind() == ErrorKind.ClientError;
+        return this.kind() == ApiErrorKind.ClientError;
     }
 
     is_server(): boolean {
-        return this.kind() == ErrorKind.ServerError;
+        return this.kind() == ApiErrorKind.ServerError;
     }
 
     name(): string {
         return ApiErrorCode[this.code];
     }
 
-    kind(): ErrorKind {
+    kind(): ApiErrorKind {
         let code = this.code;
         if(code >= 60000) {
-            return ErrorKind.Unknown;
+            return ApiErrorKind.Unknown;
         } else if(code >= 50000) {
-            return ErrorKind.ServerError;
+            return ApiErrorKind.ServerError;
         } else if(code >= 40000) {
-            return ErrorKind.ClientError;
+            return ApiErrorKind.ClientError;
         } else {
-            return ErrorKind.Unknown;
+            return ApiErrorKind.Unknown;
         }
     }
 }
