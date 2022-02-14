@@ -18,7 +18,7 @@ export interface XHRParameters {
     timeout?: number,
     bearer?: string | null,
     onprogress?: (this: XMLHttpRequest, ev: ProgressEvent) => any;
-    headers?: { [header: string]: string },
+    headers?: { [header: string]: string | null | undefined },
     json?: any,
     upload?: boolean,
 }
@@ -51,7 +51,8 @@ export function fetch(params: string | XHRParameters): Promise<XMLHttpRequest> {
 
             if(params.headers) {
                 for(let key in params.headers) {
-                    xhr.setRequestHeader(key, params.headers[key]);
+                    let value = params.headers[key];
+                    if(value) xhr.setRequestHeader(key, value);
                 }
             }
 

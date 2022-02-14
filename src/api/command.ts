@@ -2,10 +2,9 @@ import { XHRMethod } from "lib/fetch";
 import { EMPTY, Permission, union } from "models/permission";
 
 export enum CommandFlags {
-    NONE = 0,
     HAS_BODY = 1 << 0,
     HAS_RESPONSE = 1 << 1,
-    AUTHORIZED = 1 << 2,
+    UNAUTHORIZED = 1 << 2,
 }
 
 type CommandThis<F, R, B> = Readonly<F> & Command<F, R, B>;
@@ -53,7 +52,7 @@ export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms'
 
 const DEFAULT: Command<any, any, any> = {
     method: XHRMethod.GET,
-    flags: CommandFlags.NONE,
+    flags: 0,
     perms: () => EMPTY,
     path: () => "",
     headers: () => ({}),

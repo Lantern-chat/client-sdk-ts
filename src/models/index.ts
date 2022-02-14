@@ -1,5 +1,8 @@
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
+export { AuthToken } from "./auth";
+export * as auth from "./auth";
+
 export enum Intent {
     PARTIES = 1 << 0,
     PARTY_MEMBERS = 1 << 1,

@@ -1,7 +1,7 @@
 import { command, Command, CommandFlags } from "api/command";
 import { ApiError } from "api/error";
 import { fetch, XHRMethod } from "lib/fetch";
-import { Snowflake } from "models";
+import { Snowflake, AuthToken } from "models";
 
 //import { buf as crc32buf } from "crc-32";
 import { encodeInt32ToBase64 } from "lib/base64";
@@ -9,6 +9,7 @@ import { encodeInt32ToBase64 } from "lib/base64";
 export enum DriverErrorCode {
     MissingResponse,
     HttpError,
+    MissingAuthorization,
 }
 
 export interface HttpError {
@@ -16,13 +17,19 @@ export interface HttpError {
     xhr?: XMLHttpRequest,
 }
 
-export type DriverErrors = HttpError | { code: DriverErrorCode.MissingResponse };
+export type DriverErrors = HttpError |
+{ code: DriverErrorCode.MissingResponse } |
+{ code: DriverErrorCode.MissingAuthorization };
 
 export class DriverError {
     error: DriverErrors;
 
     constructor(error: DriverErrors) {
         this.error = error;
+    }
+
+    msg(): string {
+        return DriverErrorCode[this.error.code];
     }
 }
 
@@ -36,13 +43,17 @@ const QUERY_METHODS = [
 
 export class Driver {
     uri: string;
-    bearer: string | null = null;
+    auth: AuthToken | null = null;
 
     constructor(uri: string) {
         this.uri = uri;
     }
 
     async execute<R>(cmd: Command<any, R, any>): Promise<R> {
+        if(!this.auth && (cmd.flags & CommandFlags.UNAUTHORIZED) == 0) {
+            throw new DriverError({ code: DriverErrorCode.MissingAuthorization });
+        }
+
         let path = this.uri + "/api/v1" + cmd.path(),
             body = cmd.body();
 
@@ -62,8 +73,7 @@ export class Driver {
                 method: cmd.method,
                 url: path,
                 json: body,
-                headers: cmd.headers(),
-                bearer: this.bearer,
+                headers: { ...cmd.headers(), "Authorization": this.auth?.format() },
             });
 
             let result = cmd.parse(response);
@@ -79,6 +89,10 @@ export class Driver {
     }
 
     async patch_file(file_id: Snowflake, checksum: number, offset: number, body: ArrayBuffer, progress?: (e: ProgressEvent) => void): Promise<number> {
+        if(!this.auth) {
+            throw new DriverError({ code: DriverErrorCode.MissingAuthorization });
+        }
+
         let path = this.uri + "/api/v1/file/" + file_id;
 
         try {
@@ -86,9 +100,9 @@ export class Driver {
                 method: XHRMethod.PATCH,
                 upload: true,
                 url: path,
-                bearer: this.bearer,
                 onprogress: progress,
                 headers: {
+                    "Authorization": this.auth?.format(),
                     "Upload-Offset": offset.toString(),
                     "Upload-Checksum": encodeInt32ToBase64(checksum),
                     "Content-Type": "application/offset+octet-stream",

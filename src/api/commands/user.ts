@@ -1,5 +1,5 @@
-import { command } from "api/command";
-import { Friend, Session, Snowflake, UserPreferences } from "models";
+import { command, CommandFlags } from "api/command";
+import { Friend, Session, UserPreferences } from "models";
 
 import * as perms from "models/permission";
 const { R, P, S } = perms;
@@ -15,6 +15,7 @@ export interface UserRegisterForm {
 }
 
 export const UserRegister = command.post<{ form: UserRegisterForm }, Session, UserRegisterForm>({
+    flags: CommandFlags.UNAUTHORIZED,
     parse: command.parse,
     path: "/user",
     body: "form",
@@ -27,6 +28,7 @@ export interface UserLoginForm {
 }
 
 export const UserLogin = command.post<{ form: UserLoginForm, test: Blob }, Session, UserLoginForm>({
+    flags: CommandFlags.UNAUTHORIZED,
     parse: command.parse,
     path: "/user/@me",
     body: "form"
