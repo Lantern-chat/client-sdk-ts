@@ -1,5 +1,5 @@
 import { command } from "api/command";
-import { Session, Snowflake } from "models";
+import { Friend, Session, Snowflake, UserPreferences } from "models";
 
 import * as perms from "models/permission";
 const { R, P, S } = perms;
@@ -32,6 +32,15 @@ export const UserLogin = command.post<{ form: UserLoginForm, test: Blob }, Sessi
     body: "form"
 });
 
-export const GetSessions = command.get<{}, Array<Session>>({
+export const GetSessions = command<{}, Array<Session>>({
     path: "/user/@me/sessions"
+});
+
+export const GetFriends = command<{}, Array<Friend>>({
+    path: "/user/@me/friends"
+});
+
+export const UpdateUserPrefs = command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({
+    path: "/user/@me/prefs",
+    body: "prefs",
 });

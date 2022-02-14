@@ -1,5 +1,5 @@
 import { command } from "api/command";
-import { Message, Snowflake } from "models";
+import { Snowflake } from "models";
 
 export interface CreateFileBody {
     filename: string,
@@ -11,6 +11,7 @@ export interface CreateFileBody {
 }
 
 export const CreateFile = command.post<{ params: CreateFileBody }, Snowflake, CreateFileBody>({
+    parse: command.parse,
     path: "/file",
     body: "params",
 });
