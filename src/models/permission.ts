@@ -1,4 +1,4 @@
-import { Snowflake } from "models";
+import type { Snowflake } from "../models";
 
 export interface Permission {
     party: number,

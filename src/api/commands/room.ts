@@ -1,8 +1,6 @@
-import { command } from "api/command";
-import { Message, Snowflake } from "models";
-
-import * as perms from "models/permission";
-const { R, P, S } = perms;
+import { command } from "../command";
+import { Message, Snowflake } from "../../models";
+import { RoomPermissions, union, cond } from "../../models/permission";
 
 export interface CreateMessageBody {
     content?: string,
@@ -15,15 +13,15 @@ export const CreateMessage = command.post<{ room_id: Snowflake, msg: CreateMessa
     path() { return `/room/${this.room_id}/messages`; },
     body: "msg",
     perms() {
-        return perms.union(
-            { room: R.SEND_MESSAGES },
-            perms.cond(!!this.msg.attachments?.length, { room: R.ATTACH_FILES }),
+        return union(
+            { room: RoomPermissions.SEND_MESSAGES },
+            cond(!!this.msg.attachments?.length, { room: RoomPermissions.ATTACH_FILES }),
         );
     }
 });
 
 export const GetMessage = command<{ room_id: Snowflake, msg_id: Snowflake }, Message>({
-    perms: { room: R.READ_MESSAGES },
+    perms: { room: RoomPermissions.READ_MESSAGES },
     path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
 });
 
@@ -35,12 +33,12 @@ export interface GetMessagesBody {
 }
 
 export const GetMessages = command<{ room_id: Snowflake, query: GetMessagesBody }, Array<Message>, GetMessagesBody>({
-    perms: { room: R.READ_MESSAGES },
+    perms: { room: RoomPermissions.READ_MESSAGES },
     path() { return `/room/${this.room_id}/messages`; },
     body: "query",
 });
 
 export const StartTyping = command.post<{ room_id: Snowflake }>({
-    perms: { room: R.SEND_MESSAGES },
+    perms: { room: RoomPermissions.SEND_MESSAGES },
     path() { return `/room/${this.room_id}/typing`; }
 });

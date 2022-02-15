@@ -1,6 +1,6 @@
-import { CreateFile, CreateFileBody } from "api/commands/file";
-import { Driver } from "driver";
-import { AuthToken, Snowflake } from "models";
+import { CreateFile, CreateFileBody } from "../api/commands/file";
+import { Driver } from "../driver";
+import { AuthToken, Snowflake } from "../models";
 
 import { buf as crc32buf } from "crc-32";
 

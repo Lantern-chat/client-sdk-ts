@@ -1,5 +1,5 @@
-import { command } from "api/command";
-import { Party, PartyMember, Room, Snowflake } from "models";
+import { command } from "../command";
+import { Party, PartyMember, Room, Snowflake } from "../../models";
 
 export const GetParty = command<{ party_id: Snowflake }, Party>({
     path() { return `/party/${this.party_id}`; }

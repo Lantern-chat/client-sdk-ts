@@ -1,8 +1,5 @@
-import { command, CommandFlags } from "api/command";
-import { Friend, Session, UserPreferences } from "models";
-
-import * as perms from "models/permission";
-const { R, P, S } = perms;
+import { command, CommandFlags } from "../command";
+import { Friend, Session, UserPreferences } from "../../models";
 
 export interface UserRegisterForm {
     email: string,

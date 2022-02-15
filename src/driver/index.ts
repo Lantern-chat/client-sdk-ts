@@ -1,10 +1,9 @@
-import { command, Command, CommandFlags } from "api/command";
-import { ApiError } from "api/error";
-import { fetch, XHRMethod } from "lib/fetch";
-import { Snowflake, AuthToken } from "models";
+import { command, Command, CommandFlags } from "../api/command";
+import { ApiError } from "../api/error";
+import { Snowflake, AuthToken } from "../models";
 
-//import { buf as crc32buf } from "crc-32";
-import { encodeInt32ToBase64 } from "lib/base64";
+import { fetch, XHRMethod } from "../lib/fetch";
+import { encodeInt32ToBase64 } from "../lib/base64";
 
 export enum DriverErrorCode {
     MissingResponse,

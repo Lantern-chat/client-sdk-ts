@@ -1,5 +1,5 @@
-import { command } from "api/command";
-import { Snowflake } from "models";
+import { command } from "../command";
+import type { Snowflake } from "../../models";
 
 export interface CreateFileBody {
     filename: string,

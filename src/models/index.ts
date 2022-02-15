@@ -1,6 +1,6 @@
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export { AuthToken } from "./auth";
+export type { AuthToken } from "./auth";
 export * as auth from "./auth";
 
 export enum Intent {
@@ -298,7 +298,7 @@ export interface Invite {
 }
 
 import { Permission, Overwrite } from "./permission";
-export { Permission, Overwrite } from "./permission";
+export type { Permission, Overwrite } from "./permission";
 
 export * as perms from "./permission";
 

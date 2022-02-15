@@ -1,5 +1,5 @@
-import { XHRMethod } from "lib/fetch";
-import { EMPTY, Permission, union } from "models/permission";
+import { XHRMethod } from "../lib/fetch";
+import { EMPTY, Permission, union } from "../models/permission";
 
 export enum CommandFlags {
     HAS_BODY = 1 << 0,
@@ -119,6 +119,6 @@ function makeMethodCommand(method: XHRMethod): typeof command {
 command.get = makeMethodCommand(XHRMethod.GET);
 command.post = makeMethodCommand(XHRMethod.POST);
 command.patch = makeMethodCommand(XHRMethod.PATCH);
-command.delete = makeMethodCommand(XHRMethod.DELETE);
+command.del = makeMethodCommand(XHRMethod.DELETE);
 command.head = makeMethodCommand(XHRMethod.HEAD);
 command.options = makeMethodCommand(XHRMethod.OPTIONS);
