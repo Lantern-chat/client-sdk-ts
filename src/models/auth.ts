@@ -17,15 +17,13 @@ class GenericToken {
 }
 
 export class BearerToken extends GenericToken {
-    constructor(token: string) {
-        super(token, 28, "Bearer");
-    }
+    /** Throws `RangeError` if the given token is the incorrect length  */
+    constructor(token: string) { super(token, 28, "Bearer") }
 }
 
 export class BotToken extends GenericToken {
-    constructor(token: string) {
-        super(token, 64, "Bot");
-    }
+    /** Throws `RangeError` if the given token is the incorrect length  */
+    constructor(token: string) { super(token, 64, "Bot") }
 }
 
 export type AuthToken = BearerToken | BotToken;
