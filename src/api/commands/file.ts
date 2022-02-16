@@ -10,13 +10,13 @@ export interface CreateFileBody {
     preview?: string,
 }
 
-export const CreateFile = command.post<{ params: CreateFileBody }, Snowflake, CreateFileBody>({
+export const CreateFile = /*#__PURE__*/command.post<{ params: CreateFileBody }, Snowflake, CreateFileBody>({
     parse: command.parse,
     path: "/file",
     body: "params",
 });
 
-export const GetFilesystemStatus = command.options<{}, FilesystemStatus>({
+export const GetFilesystemStatus = /*#__PURE__*/command.options<{}, FilesystemStatus>({
     path: "/file",
 });
 

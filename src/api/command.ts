@@ -116,9 +116,9 @@ function makeMethodCommand(method: XHRMethod): typeof command {
     } as typeof command;
 }
 
-command.get = makeMethodCommand(XHRMethod.GET);
-command.post = makeMethodCommand(XHRMethod.POST);
-command.patch = makeMethodCommand(XHRMethod.PATCH);
-command.del = makeMethodCommand(XHRMethod.DELETE);
-command.head = makeMethodCommand(XHRMethod.HEAD);
-command.options = makeMethodCommand(XHRMethod.OPTIONS);
+command.get = /*#__PURE__*/makeMethodCommand(XHRMethod.GET);
+command.post = /*#__PURE__*/makeMethodCommand(XHRMethod.POST);
+command.patch = /*#__PURE__*/makeMethodCommand(XHRMethod.PATCH);
+command.del = /*#__PURE__*/makeMethodCommand(XHRMethod.DELETE);
+command.head = /*#__PURE__*/makeMethodCommand(XHRMethod.HEAD);
+command.options = /*#__PURE__*/makeMethodCommand(XHRMethod.OPTIONS);

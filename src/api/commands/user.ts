@@ -11,7 +11,7 @@ export interface UserRegisterForm {
     token: string,
 }
 
-export const UserRegister = command.post<{ form: UserRegisterForm }, Session, UserRegisterForm>({
+export const UserRegister = /*#__PURE__*/command.post<{ form: UserRegisterForm }, Session, UserRegisterForm>({
     flags: CommandFlags.UNAUTHORIZED,
     parse: command.parse,
     path: "/user",
@@ -24,22 +24,22 @@ export interface UserLoginForm {
     totp?: string,
 }
 
-export const UserLogin = command.post<{ form: UserLoginForm, test: Blob }, Session, UserLoginForm>({
+export const UserLogin = /*#__PURE__*/command.post<{ form: UserLoginForm, test: Blob }, Session, UserLoginForm>({
     flags: CommandFlags.UNAUTHORIZED,
     parse: command.parse,
     path: "/user/@me",
     body: "form"
 });
 
-export const GetSessions = command<{}, Array<Session>>({
+export const GetSessions = /*#__PURE__*/command<{}, Array<Session>>({
     path: "/user/@me/sessions"
 });
 
-export const GetFriends = command<{}, Array<Friend>>({
+export const GetFriends = /*#__PURE__*/command<{}, Array<Friend>>({
     path: "/user/@me/friends"
 });
 
-export const UpdateUserPrefs = command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({
+export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({
     path: "/user/@me/prefs",
     body: "prefs",
 });
