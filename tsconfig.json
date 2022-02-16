@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "module": "ESNext",
+        "target": "es6",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "declaration": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "incremental": true,
+        "forceConsistentCasingInFileNames": true,
+        "alwaysStrict": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "importHelpers": true,
+        "strictNullChecks": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noUnusedLocals": false,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "strictPropertyInitialization": true,
+        "noEmit": true,
+        "preserveConstEnums": true
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "docs"
+    ]
+}
