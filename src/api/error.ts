@@ -60,7 +60,7 @@ export enum ApiErrorCode {
     Unknown = 1,
 }
 
-export enum ApiErrorKind {
+export const enum ApiErrorKind {
     Unknown,
     ServerError,
     ClientError,

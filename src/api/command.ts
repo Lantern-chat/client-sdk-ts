@@ -1,7 +1,7 @@
 import { XHRMethod } from "../lib/fetch";
 import { EMPTY, Permission, union } from "../models/permission";
 
-export enum CommandFlags {
+export const enum CommandFlags {
     HAS_BODY = 1 << 0,
     HAS_RESPONSE = 1 << 1,
     UNAUTHORIZED = 1 << 2,
@@ -24,16 +24,14 @@ export interface Command<F extends NonNullable<any>, R, B> {
     path(this: CommandThis<F, R, B>): string;
     headers(this: CommandThis<F, R, B>): { [name: string]: string },
     body(this: CommandThis<F, R, B>): B;
-    parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | null;
+    parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | undefined;
 }
 
-function defaultParse<B>(req: XMLHttpRequest): B | null {
-    switch(req.responseType) {
-        case 'json': return req.response;
-        case '':
-        case 'text': return JSON.parse(req.responseText);
-        default: return null;
-    }
+function defaultParse<B>(req: XMLHttpRequest): B | undefined {
+    let t = req.responseType;
+    if(t == 'json') return req.response;
+    if(t == '' || t == 'text') return JSON.parse(req.responseText);
+    return;
 }
 
 // https://stackoverflow.com/a/49752227/2083075
@@ -112,7 +110,7 @@ command.parse = defaultParse;
 
 function makeMethodCommand(method: XHRMethod): typeof command {
     return function(template) {
-        return command({ ...template, method });
+        return command((template.method = method, template));
     } as typeof command;
 }
 

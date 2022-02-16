@@ -3,7 +3,7 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type { AuthToken } from "./auth";
 export * as auth from "./auth";
 
-export enum Intent {
+export const enum Intent {
     PARTIES = 1 << 0,
     PARTY_MEMBERS = 1 << 1,
     PARTY_BANS = 1 << 2,
@@ -28,7 +28,7 @@ export enum Intent {
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
 
-export enum UserFlags {
+export const enum UserFlags {
     Deleted = 1 << 0,
     Verified = 1 << 1,
     MfaEnabled = 1 << 2,
@@ -43,7 +43,7 @@ export enum UserFlags {
     ExtraStorage = 3 << 13,
 }
 
-export enum ElevationLevel {
+export const enum ElevationLevel {
     None = 0,
     Bot = 1,
     Staff = 3,
@@ -89,7 +89,7 @@ export interface Session extends AnonymousSession {
     auth: string,
 }
 
-export enum Font {
+export const enum Font {
     SansSerif = 0,
     Serif,
     Monospace,
@@ -108,7 +108,7 @@ export const FONT_NAMES: { [key in keyof typeof Font]: string } = {
     "OpenDyslexic": "Open Dyslexic",
 }
 
-export enum UserPreferenceFlags {
+export const enum UserPreferenceFlags {
     ReduceAnimations = 1 << 0,
     UnfocusPause = 1 << 1,
     LightMode = 1 << 2,
@@ -143,7 +143,7 @@ export function hasUserPrefFlag(prefs: Pick<UserPreferences, 'flags'>, flag: Use
     return (prefs.flags & flag) !== 0;
 }
 
-export enum UserPresenceFlags {
+export const enum UserPresenceFlags {
     Online = 1 << 0,
     Away = 1 << 1,
     Busy = 1 << 2,
@@ -164,7 +164,7 @@ export interface Friend {
     user: User,
 }
 
-export enum RoomFlags {
+export const enum RoomFlags {
     Text = 1 << 0,
     Direct = 1 << 1,
     Voice = 1 << 2,
@@ -186,7 +186,7 @@ export interface Room {
     overwrites?: Overwrite[],
 }
 
-export enum MessageFlags {
+export const enum MessageFlags {
     MentionsEveryone = 1 << 1,
     MentionsHere = 1 << 2,
     Pinned = 1 << 3,
@@ -233,7 +233,7 @@ export interface EmbedMediaAttributes {
     color?: number,
 }
 
-export enum EmbedMediaKind {
+export const enum EmbedMediaKind {
     Image = "image",
     Video = "video",
     Audio = "audio",
@@ -258,7 +258,7 @@ export interface File {
     preview?: string,
 }
 
-export enum AttachmentFlags {
+export const enum AttachmentFlags {
     Spoiler = 1 << 0,
 }
 
@@ -392,7 +392,7 @@ export interface MemberEvent extends PartyMember {
     party_id: Snowflake,
 }
 
-export enum PresenceStatus {
+export const enum PresenceStatus {
     Online,
     Away,
     Busy,

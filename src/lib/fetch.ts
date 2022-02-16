@@ -1,4 +1,4 @@
-export enum XHRMethod {
+export const enum XHRMethod {
     GET = "GET",
     HEAD = "HEAD",
     POST = "POST",

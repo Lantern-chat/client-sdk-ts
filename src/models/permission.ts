@@ -12,7 +12,7 @@ export interface Overwrite {
     deny?: Permission,
 }
 
-export enum PartyPermissions {
+export const enum PartyPermissions {
     CREATE_INVITE = 1 << 0,
     KICK_MEMBERS = 1 << 1,
     BAN_MEMBERS = 1 << 2,
@@ -32,7 +32,7 @@ export enum PartyPermissions {
     PARTY_ALL = (1 << 15) - 1,
 }
 
-export enum RoomPermissions {
+export const enum RoomPermissions {
     VIEW_ROOM = 1 << 0,
     READ_MESSAGES = 1 << 1 | VIEW_ROOM,
     SEND_MESSAGES = 1 << 2 | VIEW_ROOM,
@@ -51,7 +51,7 @@ export enum RoomPermissions {
     ROOM_ALL = (1 << 14) - 1,
 }
 
-export enum StreamPermissions {
+export const enum StreamPermissions {
     /// Allows a user to broadcast a stream to this room
     STREAM = 1 << 0,
     /// Allows a user to connect and watch/listen to streams in a room
@@ -63,10 +63,6 @@ export enum StreamPermissions {
 
     STREAM_ALL = (1 << 4) - 1,
 }
-
-export const P = PartyPermissions;
-export const R = RoomPermissions;
-export const S = StreamPermissions;
 
 export function union(...perms: Array<Partial<Permission>>): Permission {
     let result = { party: 0, room: 0, stream: 0 };
@@ -92,20 +88,6 @@ export function difference(a: Permission, b: Permission): Permission {
 
 export function cond(value: boolean, p: Partial<Permission>): Partial<Permission> {
     return value ? union(p) : EMPTY;
-}
-
-export type PermissionName = keyof typeof RoomPermissions | keyof typeof PartyPermissions | keyof typeof StreamPermissions;
-
-export function named(...keys: PermissionName[]): Permission {
-    let result = { party: 0, room: 0, stream: 0 };
-
-    for(let key of keys) {
-        result.party |= PartyPermissions[key];
-        result.room |= RoomPermissions[key];
-        result.stream |= StreamPermissions[key];
-    }
-
-    return result;
 }
 
 export function compute_overwrites(
