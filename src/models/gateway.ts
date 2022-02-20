@@ -61,10 +61,8 @@ export const enum ClientMsgOpcode {
     SetPresence = 3,
 }
 
-export interface IServerMsg<Opcode extends ServerMsgOpcode, Payload = undefined> {
-    o: Opcode,
-    p: Payload,
-}
+export type IServerMsg<Opcode extends ServerMsgOpcode, Payload = undefined>
+    = Payload extends undefined ? { o: Opcode } : { o: Opcode, p: Payload };
 
 export type ServerMsg =
     IServerMsg<ServerMsgOpcode.Hello, { heartbeat_interval: number }> |
@@ -136,10 +134,8 @@ export interface TypingStartEvent {
     member?: PartyMember,
 }
 
-export interface IClientMsg<Opcode extends ClientMsgOpcode, Payload = undefined> {
-    o: Opcode,
-    p: Payload,
-}
+export type IClientMsg<Opcode extends ClientMsgOpcode, Payload = undefined>
+    = Payload extends undefined ? { o: Opcode } : { o: Opcode, p: Payload };
 
 export type ClientMsg =
     IClientMsg<ClientMsgOpcode.Heartbeat> |
