@@ -3,27 +3,13 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type { AuthToken } from "./auth";
 export * as auth from "./auth";
 
-export const enum Intent {
-    PARTIES = 1 << 0,
-    PARTY_MEMBERS = 1 << 1,
-    PARTY_BANS = 1 << 2,
-    PARTY_EMOTES = 1 << 3,
-    PARTY_INTEGRATIONS = 1 << 4,
-    PARTY_WEBHOOKS = 1 << 5,
-    PARTY_INVITES = 1 << 6,
-    VOICE_STATUS = 1 << 7,
-    PRESENCE = 1 << 8,
-    MESSAGES = 1 << 9,
-    MESSAGE_REACTIONS = 1 << 10,
-    MESSAGE_TYPING = 1 << 11,
-    DIRECT_MESSAGES = 1 << 12,
-    DIRECT_MESSAGE_REACTIONS = 1 << 13,
-    DIRECT_MESSAGE_TYPING = 1 << 14,
+export type { Permission, Overwrite } from "./permission";
+import { Permission, Overwrite } from "./permission";
 
-    ALL_DESKTOP = (1 << 15) - 1, // all 1s
+export * as perms from "./permission";
 
-    ALL_MOBILE = Intent.ALL_DESKTOP & ~Intent.PRESENCE, // TODO: Add more
-}
+export type { ServerMsg, ClientMsg } from "./gateway";
+export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
@@ -297,11 +283,6 @@ export interface Invite {
     description: string,
 }
 
-import { Permission, Overwrite } from "./permission";
-export type { Permission, Overwrite } from "./permission";
-
-export * as perms from "./permission";
-
 export interface Role {
     id: Snowflake,
     party_id: Snowflake,
@@ -327,70 +308,6 @@ export interface StandardEmote {
 }
 
 export type Emote = StandardEmote | CustomEmote;
-
-
-// GATEWAY
-
-export type GatewayEvent =
-    HelloEvent |
-    ReadyEvent |
-    TypingStartEvent |
-    UserPresenceUpdateEvent |
-    UserUpdateEvent |
-    MessageDeleteEvent;
-
-export interface HelloEvent {
-    heartbeat_interval: number,
-}
-
-export interface ReadyEvent {
-    user: User,
-    dms: Room[],
-    parties: Party[],
-    session: Snowflake,
-}
-
-export interface TypingStartEvent {
-    room: Snowflake,
-    party?: Snowflake,
-    user: Snowflake,
-    member?: PartyMember,
-}
-
-export interface UserPresenceUpdateEvent {
-    user: User,
-    party?: Snowflake,
-    presence: UserPresence,
-}
-
-export interface UserUpdateEvent {
-    user: User,
-}
-
-export interface MessageDeleteEvent {
-    id: Snowflake,
-    room_id: Snowflake,
-    party_id?: Snowflake,
-}
-
-export interface RoleDeleteEvent {
-    id: Snowflake,
-    party_id: Snowflake,
-}
-
-export interface RoomDeleteEvent {
-    id: Snowflake,
-    party_id?: Snowflake,
-}
-
-export interface PartyPositionEvent extends Partial<Party> {
-    id: Snowflake,
-    position: number,
-}
-
-export interface MemberEvent extends PartyMember {
-    party_id: Snowflake,
-}
 
 export const enum PresenceStatus {
     Online,
