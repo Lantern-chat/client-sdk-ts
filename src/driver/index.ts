@@ -57,6 +57,9 @@ export class Driver {
         let path = this.uri + "/api/v1" + cmd.path(),
             body = cmd.body();
 
+        // clean any undefined values
+        Object.keys(body).forEach(key => body[key] === undefined && delete body[key]);
+
         // serialize body to query string
         if(body && QUERY_METHODS.indexOf(cmd.method) != -1) {
             let query = new URLSearchParams(body).toString();
