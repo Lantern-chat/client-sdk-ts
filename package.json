@@ -1,5 +1,5 @@
 {
-  "name": "client-sdk-ts",
+  "name": "client-sdk",
   "version": "0.0.1",
   "license": "GPL-3.0-only",
   "private": true,
@@ -7,8 +7,11 @@
     "@types/ws": "^8.2.2",
     "typescript": "^4.5.5"
   },
+  "sideEffects": false,
+  "main": "src/index.ts",
   "dependencies": {
     "crc-32": "^1.2.1",
+    "fflate": "^0.7.3",
     "isomorphic-ws": "^4.0.1",
     "tslib": "^2.3.1",
     "ws": "^8.5.0"
