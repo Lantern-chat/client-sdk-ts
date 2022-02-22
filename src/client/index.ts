@@ -1,6 +1,8 @@
 import { CreateFile, CreateFileBody } from "../api/commands/file";
 import { Driver } from "../driver";
-import { AuthToken, Snowflake } from "../models";
+
+import type { AuthToken, Snowflake } from "../models";
+import type { Command } from "../api/command";
 
 import { buf as crc32buf } from "crc-32";
 
@@ -15,6 +17,10 @@ export class Client {
 
     set_auth(auth: AuthToken | null) {
         this.driver.auth = auth;
+    }
+
+    execute<R>(cmd: Command<any, R, any>): Promise<R> {
+        return this.driver.execute(cmd);
     }
 
     async upload_stream(meta: Omit<CreateFileBody, 'size'>, stream: Blob, progress?: () => void): Promise<Snowflake> {
