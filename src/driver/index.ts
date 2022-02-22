@@ -42,10 +42,11 @@ const QUERY_METHODS = [
 
 export class Driver {
     uri: string;
-    auth: AuthToken | null = null;
+    auth?: AuthToken | null;
 
-    constructor(uri: string) {
+    constructor(uri: string, auth?: AuthToken) {
         this.uri = uri;
+        this.auth = auth;
     }
 
     async execute<R>(cmd: Command<any, R, any>): Promise<R> {
@@ -68,6 +69,10 @@ export class Driver {
         }
 
         try {
+            if(__DEV__) {
+                console.info("Executing command:", cmd);
+            }
+
             let response = await fetch({
                 method: cmd.method,
                 url: path,
