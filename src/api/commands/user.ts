@@ -43,3 +43,7 @@ export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ prefs: Partial<UserP
     path: "/user/@me/prefs",
     body: "prefs",
 });
+
+export const UserLogout = /*#__PURE__*/command.del({
+    path: "/user/@me"
+});
