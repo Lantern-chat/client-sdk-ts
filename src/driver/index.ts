@@ -57,20 +57,22 @@ export class Driver {
         }
 
         let path = this.uri + "/api/v1" + cmd.path(),
-            body = cmd.body();
+            body: {} | null = cmd.body();
 
-        // clean any undefined values
-        Object.keys(body).forEach(key => body[key] === undefined && delete body[key]);
+        if(body) {
+            // clean any undefined values
+            Object.keys(body).forEach(key => body![key] === undefined && delete body![key]);
 
-        // serialize body to query string
-        if(body && QUERY_METHODS.indexOf(cmd.method) != -1) {
-            let query = new URLSearchParams(body).toString();
+            // serialize body to query string
+            if(QUERY_METHODS.indexOf(cmd.method) != -1) {
+                let query = new URLSearchParams(body).toString();
 
-            if(query.length) {
-                path += '?' + query;
+                if(query.length) {
+                    path += '?' + query;
+                }
+
+                body = null;
             }
-
-            body = null;
         }
 
         try {
