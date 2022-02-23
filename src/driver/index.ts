@@ -5,6 +5,8 @@ import { Snowflake, AuthToken } from "../models";
 import { fetch, XHRMethod } from "../lib/fetch";
 import { encodeInt32ToBase64 } from "../lib/base64";
 
+import { buf as crc32buf } from "crc-32";
+
 export enum DriverErrorCode {
     MissingResponse,
     HttpError,
@@ -95,7 +97,7 @@ export class Driver {
         }
     }
 
-    async patch_file(file_id: Snowflake, checksum: number, offset: number, body: ArrayBuffer, progress?: (e: ProgressEvent) => void): Promise<number> {
+    async patch_file(file_id: Snowflake, offset: number, body: ArrayBuffer, progress?: (e: ProgressEvent) => void): Promise<number> {
         if(!this.auth) {
             throw new DriverError({ code: DriverErrorCode.MissingAuthorization });
         }
@@ -103,6 +105,8 @@ export class Driver {
         let path = this.uri + "/api/v1/file/" + file_id;
 
         try {
+            let checksum = crc32buf(new Uint8Array(body));
+
             let response = await fetch({
                 method: XHRMethod.PATCH,
                 upload: true,
