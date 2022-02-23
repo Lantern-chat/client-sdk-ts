@@ -113,7 +113,7 @@ export interface TypingStartEvent {
     member?: PartyMember,
 }
 
-export interface PartyPositionUpdateEvent {
+export interface PartyPositionUpdateEvent extends Partial<Party> {
     id: Snowflake,
     position: number,
 }
@@ -126,7 +126,7 @@ export interface PartyMemberEvent extends PartyMember {
 
 export interface RoleDeleteEvent {
     id: Snowflake,
-    party_id?: Snowflake,
+    party_id: Snowflake,
 }
 
 export interface RoomDeleteEvent {
