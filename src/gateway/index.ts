@@ -125,8 +125,8 @@ export class GatewaySocket extends MicroEmitter<{
         }
     }
 
-    get readyState(): undefined | typeof WebSocket.CONNECTING | typeof WebSocket.OPEN | typeof WebSocket.CLOSING | typeof WebSocket.CLOSED {
-        return this.ws?.readyState;
+    get readyState(): typeof WebSocket.CONNECTING | typeof WebSocket.OPEN | typeof WebSocket.CLOSING | typeof WebSocket.CLOSED {
+        return this.ws ? this.ws.readyState : 3; // closed if null
     }
 }
 
