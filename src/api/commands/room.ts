@@ -42,3 +42,8 @@ export const StartTyping = /*#__PURE__*/command.post<{ room_id: Snowflake }>({
     perms: { room: RoomPermissions.SEND_MESSAGES },
     path() { return `/room/${this.room_id}/typing`; }
 });
+
+export const DeleteMessage = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake }>({
+    perms: { room: RoomPermissions.READ_MESSAGES },
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
+});
