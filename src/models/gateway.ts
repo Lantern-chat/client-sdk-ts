@@ -1,4 +1,4 @@
-import type { Snowflake, User, Room, Party, PartyMember, Message, UserPresence } from "../models";
+import type { Snowflake, User, Room, Party, PartyMember, Message, Role, UserPresence } from "../models";
 
 export const enum Intent {
     PARTIES = 1 << 0,
@@ -70,6 +70,10 @@ export type ServerMsg =
     IServerMsg<ServerMsgOpcode.Ready, ReadyEvent> |
     IServerMsg<ServerMsgOpcode.InvalidSession> |
 
+    IServerMsg<ServerMsgOpcode.RoleCreate, Role> |
+    IServerMsg<ServerMsgOpcode.RoleUpdate, Role> |
+    IServerMsg<ServerMsgOpcode.RoleDelete, RoleDeleteEvent> |
+
     IServerMsg<ServerMsgOpcode.PartyCreate, Party> |
     IServerMsg<ServerMsgOpcode.PartyUpdate, PartyUpdateEvent> |
     IServerMsg<ServerMsgOpcode.PartyDelete, { id: Snowflake }> |
@@ -118,6 +122,11 @@ export type PartyUpdateEvent = PartyPositionUpdateEvent | Party;
 
 export interface PartyMemberEvent extends PartyMember {
     party_id: Snowflake,
+}
+
+export interface RoleDeleteEvent {
+    id: Snowflake,
+    party_id?: Snowflake,
 }
 
 export interface RoomDeleteEvent {
