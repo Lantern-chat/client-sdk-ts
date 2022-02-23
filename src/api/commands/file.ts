@@ -17,6 +17,7 @@ export const CreateFile = /*#__PURE__*/command.post<{ params: CreateFileBody }, 
 });
 
 export const GetFilesystemStatus = /*#__PURE__*/command.options<{}, FilesystemStatus>({
+    parse: command.parse,
     path: "/file",
 });
 

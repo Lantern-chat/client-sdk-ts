@@ -24,7 +24,7 @@ export interface UserLoginForm {
     totp?: string,
 }
 
-export const UserLogin = /*#__PURE__*/command.post<{ form: UserLoginForm, test: Blob }, Session, UserLoginForm>({
+export const UserLogin = /*#__PURE__*/command.post<{ form: UserLoginForm }, Session, UserLoginForm>({
     flags: CommandFlags.UNAUTHORIZED,
     parse: command.parse,
     path: "/user/@me",
