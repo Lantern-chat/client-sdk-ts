@@ -75,7 +75,7 @@ export interface Session extends AnonymousSession {
     auth: string,
 }
 
-export const enum Font {
+export enum Font {
     SansSerif = 0,
     Serif,
     Monospace,

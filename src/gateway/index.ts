@@ -1,4 +1,4 @@
-import WebSocket, { CloseEvent, ErrorEvent } from "isomorphic-ws";
+import WebSocket from "isomorphic-ws";
 
 import type { ServerMsg, ClientMsg } from "../models";
 
@@ -27,7 +27,7 @@ export const enum GatewayErrorKind {
 type GatewayErrorValue =
     { t: GatewayErrorKind.Disconnected } |
     { t: GatewayErrorKind.ServerError, e: GatewayErrorCode } |
-    { t: GatewayErrorKind.SocketError, e: ErrorEvent } |
+    { t: GatewayErrorKind.SocketError, e: WebSocket.ErrorEvent } |
     { t: GatewayErrorKind.Compression, e: FlateError } |
     { t: GatewayErrorKind.Parse, e: SyntaxError } |
     { t: GatewayErrorKind.Unknown, e: any };
@@ -52,7 +52,7 @@ export class GatewayError {
 export class GatewaySocket extends MicroEmitter<{
     msg(msg: ServerMsg): void;
     error(err: GatewayError): void;
-    close(ev: CloseEvent): void;
+    close(ev: WebSocket.CloseEvent): void;
     open(): void;
 }> {
     private ws: WebSocket | null = null;
@@ -72,16 +72,16 @@ export class GatewaySocket extends MicroEmitter<{
 
         ws.addEventListener('open', () => this.emit('open'));
 
-        ws.addEventListener('message', msg => {
+        ws.addEventListener('message', (ev: WebSocket.MessageEvent) => {
             try {
                 // decompress, decode, parse, emit
-                this.emit('msg', JSON.parse(this.decoder.decode(decompress(new Uint8Array(msg.data as ArrayBuffer)))));
+                this.emit('msg', JSON.parse(this.decoder.decode(decompress(new Uint8Array(ev.data as ArrayBuffer)))));
             } catch(e) {
                 this.emit('error', error(e));
             }
         });
 
-        ws.addEventListener('close', ev => {
+        ws.addEventListener('close', (ev: WebSocket.CloseEvent) => {
             this.ws = null; // ensure closed state
             let code = ev.code;
             if(code >= 4000 && code < GatewayErrorCode.__MAX) {
@@ -90,7 +90,7 @@ export class GatewaySocket extends MicroEmitter<{
             this.emit('close', ev);
         });
 
-        ws.addEventListener('error', e => this.emit('error', new GatewayError({ t: GatewayErrorKind.SocketError, e })));
+        ws.addEventListener('error', (e: WebSocket.ErrorEvent) => this.emit('error', new GatewayError({ t: GatewayErrorKind.SocketError, e })));
 
         return new Promise((resolve, reject) => {
             let resolve_open = this.once('open', () => {
