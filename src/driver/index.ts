@@ -111,7 +111,7 @@ export class Driver {
                 headers: {
                     "Authorization": this.auth?.format(),
                     "Upload-Offset": offset.toString(),
-                    "Upload-Checksum": encodeInt32ToBase64(checksum),
+                    "Upload-Checksum": "crc32 " + encodeInt32ToBase64(checksum),
                     "Content-Type": "application/offset+octet-stream",
                 },
                 body,
