@@ -16,6 +16,8 @@ class GenericToken {
     }
 }
 
+// NOTE: Keep these in sync with the lengths in client-sdk-rs
+
 export class BearerToken extends GenericToken {
     /** Throws `RangeError` if the given token is the incorrect length  */
     constructor(token: string) { super(token, 28, "Bearer") }
@@ -23,7 +25,7 @@ export class BearerToken extends GenericToken {
 
 export class BotToken extends GenericToken {
     /** Throws `RangeError` if the given token is the incorrect length  */
-    constructor(token: string) { super(token, 64, "Bot") }
+    constructor(token: string) { super(token, 48, "Bot") }
 }
 
 export type AuthToken = BearerToken | BotToken;
