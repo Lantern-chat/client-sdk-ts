@@ -25,12 +25,12 @@ export const enum GatewayErrorKind {
 }
 
 type GatewayErrorValue =
-    { t: GatewayErrorKind.Disconnected } |
-    { t: GatewayErrorKind.ServerError, e: GatewayErrorCode } |
-    { t: GatewayErrorKind.SocketError, e: WebSocket.ErrorEvent } |
-    { t: GatewayErrorKind.Compression, e: FlateError } |
-    { t: GatewayErrorKind.Parse, e: SyntaxError } |
-    { t: GatewayErrorKind.Unknown, e: any };
+    | { t: GatewayErrorKind.Disconnected }
+    | { t: GatewayErrorKind.ServerError, e: GatewayErrorCode }
+    | { t: GatewayErrorKind.SocketError, e: WebSocket.ErrorEvent }
+    | { t: GatewayErrorKind.Compression, e: FlateError }
+    | { t: GatewayErrorKind.Parse, e: SyntaxError }
+    | { t: GatewayErrorKind.Unknown, e: any };
 
 export class GatewayError {
     value: GatewayErrorValue;

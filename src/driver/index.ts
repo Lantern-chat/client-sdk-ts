@@ -18,9 +18,10 @@ export interface HttpError {
     xhr?: XMLHttpRequest,
 }
 
-export type DriverErrors = HttpError |
-{ code: DriverErrorCode.MissingResponse } |
-{ code: DriverErrorCode.MissingAuthorization };
+export type DriverErrors =
+    | HttpError
+    | { code: DriverErrorCode.MissingResponse }
+    | { code: DriverErrorCode.MissingAuthorization };
 
 export class DriverError {
     error: DriverErrors;

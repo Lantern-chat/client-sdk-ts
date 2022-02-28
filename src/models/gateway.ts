@@ -59,44 +59,46 @@ export const enum ClientMsgOpcode {
     Identify = 1,
     Resume = 2,
     SetPresence = 3,
+    Subscribe = 4,
+    Unsubscribe = 5,
 }
 
 export type IServerMsg<Opcode extends ServerMsgOpcode, Payload = undefined>
     = Payload extends undefined ? { o: Opcode } : { o: Opcode, p: Payload };
 
 export type ServerMsg =
-    IServerMsg<ServerMsgOpcode.Hello, { heartbeat_interval: number }> |
-    IServerMsg<ServerMsgOpcode.HeartbeatAck> |
-    IServerMsg<ServerMsgOpcode.Ready, ReadyEvent> |
-    IServerMsg<ServerMsgOpcode.InvalidSession> |
+    | IServerMsg<ServerMsgOpcode.Hello, { heartbeat_interval: number }>
+    | IServerMsg<ServerMsgOpcode.HeartbeatAck>
+    | IServerMsg<ServerMsgOpcode.Ready, ReadyEvent>
+    | IServerMsg<ServerMsgOpcode.InvalidSession>
 
-    IServerMsg<ServerMsgOpcode.RoleCreate, Role> |
-    IServerMsg<ServerMsgOpcode.RoleUpdate, Role> |
-    IServerMsg<ServerMsgOpcode.RoleDelete, RoleDeleteEvent> |
+    | IServerMsg<ServerMsgOpcode.RoleCreate, Role>
+    | IServerMsg<ServerMsgOpcode.RoleUpdate, Role>
+    | IServerMsg<ServerMsgOpcode.RoleDelete, RoleDeleteEvent>
 
-    IServerMsg<ServerMsgOpcode.PartyCreate, Party> |
-    IServerMsg<ServerMsgOpcode.PartyUpdate, PartyUpdateEvent> |
-    IServerMsg<ServerMsgOpcode.PartyDelete, { id: Snowflake }> |
+    | IServerMsg<ServerMsgOpcode.PartyCreate, Party>
+    | IServerMsg<ServerMsgOpcode.PartyUpdate, PartyUpdateEvent>
+    | IServerMsg<ServerMsgOpcode.PartyDelete, { id: Snowflake }>
 
-    IServerMsg<ServerMsgOpcode.MemberAdd, PartyMemberEvent> |
-    IServerMsg<ServerMsgOpcode.MemberUpdate, PartyMemberEvent> |
-    IServerMsg<ServerMsgOpcode.MemberRemove, PartyMemberEvent> |
-    IServerMsg<ServerMsgOpcode.MemberBan, PartyMemberEvent> |
-    IServerMsg<ServerMsgOpcode.MemberUnban, PartyMemberEvent> |
+    | IServerMsg<ServerMsgOpcode.MemberAdd, PartyMemberEvent>
+    | IServerMsg<ServerMsgOpcode.MemberUpdate, PartyMemberEvent>
+    | IServerMsg<ServerMsgOpcode.MemberRemove, PartyMemberEvent>
+    | IServerMsg<ServerMsgOpcode.MemberBan, PartyMemberEvent>
+    | IServerMsg<ServerMsgOpcode.MemberUnban, PartyMemberEvent>
 
-    IServerMsg<ServerMsgOpcode.RoomCreate, Room> |
-    IServerMsg<ServerMsgOpcode.RoomUpdate, Room> |
-    IServerMsg<ServerMsgOpcode.RoomDelete, RoomDeleteEvent> |
+    | IServerMsg<ServerMsgOpcode.RoomCreate, Room>
+    | IServerMsg<ServerMsgOpcode.RoomUpdate, Room>
+    | IServerMsg<ServerMsgOpcode.RoomDelete, RoomDeleteEvent>
 
-    IServerMsg<ServerMsgOpcode.MessageCreate, Message> |
-    IServerMsg<ServerMsgOpcode.MessageUpdate, Message> |
-    IServerMsg<ServerMsgOpcode.MessageDelete, MessageDeleteEvent> |
+    | IServerMsg<ServerMsgOpcode.MessageCreate, Message>
+    | IServerMsg<ServerMsgOpcode.MessageUpdate, Message>
+    | IServerMsg<ServerMsgOpcode.MessageDelete, MessageDeleteEvent>
 
-    IServerMsg<ServerMsgOpcode.PresenceUpdate, UserPresenceUpdateEvent> |
+    | IServerMsg<ServerMsgOpcode.PresenceUpdate, UserPresenceUpdateEvent>
 
-    IServerMsg<ServerMsgOpcode.TypingStart, TypingStartEvent> |
+    | IServerMsg<ServerMsgOpcode.TypingStart, TypingStartEvent>
 
-    IServerMsg<ServerMsgOpcode.UserUpdate, { user: User }>
+    | IServerMsg<ServerMsgOpcode.UserUpdate, { user: User }>
     ;
 
 export interface ReadyEvent {
@@ -157,10 +159,12 @@ export type IClientMsg<Opcode extends ClientMsgOpcode, Payload = undefined>
     = Payload extends undefined ? { o: Opcode } : { o: Opcode, p: Payload };
 
 export type ClientMsg =
-    IClientMsg<ClientMsgOpcode.Heartbeat> |
-    IClientMsg<ClientMsgOpcode.Identify, Identify> |
-    IClientMsg<ClientMsgOpcode.Resume, { session: Snowflake }> |
-    IClientMsg<ClientMsgOpcode.SetPresence, UserPresence>;
+    | IClientMsg<ClientMsgOpcode.Heartbeat>
+    | IClientMsg<ClientMsgOpcode.Identify, Identify>
+    | IClientMsg<ClientMsgOpcode.Resume, { session: Snowflake }>
+    | IClientMsg<ClientMsgOpcode.SetPresence, UserPresence>
+    | IClientMsg<ClientMsgOpcode.Subscribe, { party_id: Snowflake }>
+    | IClientMsg<ClientMsgOpcode.Unsubscribe, { party_id: Snowflake }>;
 
 export interface Identify {
     auth: string,
