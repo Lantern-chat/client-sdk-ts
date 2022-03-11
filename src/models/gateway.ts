@@ -17,9 +17,7 @@ export const enum Intent {
     DIRECT_MESSAGE_REACTIONS = 1 << 13,
     DIRECT_MESSAGE_TYPING = 1 << 14,
 
-    ALL_DESKTOP = (1 << 15) - 1, // all 1s
-
-    ALL_MOBILE = Intent.ALL_DESKTOP & ~Intent.PRESENCE, // TODO: Add more
+    ALL = (1 << 15) - 1, // all 1s
 }
 
 export const enum ServerMsgOpcode {
