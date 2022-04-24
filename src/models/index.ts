@@ -179,13 +179,18 @@ export const enum MessageFlags {
     Pinned = 1 << 3,
     TTS = 1 << 4,
     SupressEmbeds = 1 << 5,
-    Welcome = 1 << 6,
+}
+
+export const enum MessageKind {
+    Normal = 0,
+    Welcome = 1,
 }
 
 export interface Message {
     id: Snowflake,
     room_id: Snowflake,
     party_id?: Snowflake,
+    kind?: MessageKind,
     author: User,
     member?: PartialPartyMember,
     thread_id?: Snowflake,
