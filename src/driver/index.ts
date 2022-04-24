@@ -78,7 +78,7 @@ export class Driver {
 
         try {
             if(__DEV__) {
-                console.info("Executing command:", cmd);
+                console.info("Executing command:", cmd.path(), cmd);
             }
 
             let response = await fetch({

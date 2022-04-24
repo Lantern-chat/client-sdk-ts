@@ -173,10 +173,13 @@ export interface Room {
 }
 
 export const enum MessageFlags {
+    Deleted = 1 << 0,
     MentionsEveryone = 1 << 1,
     MentionsHere = 1 << 2,
     Pinned = 1 << 3,
     TTS = 1 << 4,
+    SupressEmbeds = 1 << 5,
+    Welcome = 1 << 6,
 }
 
 export interface Message {
