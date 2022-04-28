@@ -273,6 +273,7 @@ export interface Party extends PartialParty {
     emotes?: Emote[],
     avatar: string | null,
     position: number,
+    default_room: Snowflake,
 }
 
 export interface PartyMember {
