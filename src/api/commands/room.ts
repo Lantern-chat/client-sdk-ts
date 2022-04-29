@@ -1,5 +1,5 @@
 import { command } from "../command";
-import { Message, Snowflake } from "../../models";
+import type { Message, Snowflake } from "../../models";
 import { RoomPermissions, union, cond } from "../../models/permission";
 
 export interface CreateMessageBody {

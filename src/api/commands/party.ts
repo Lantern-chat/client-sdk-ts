@@ -1,5 +1,5 @@
 import { command } from "../command";
-import { Party, PartyMember, Room, Snowflake } from "../../models";
+import type { Party, PartyMember, Room, Snowflake } from "../../models";
 
 export const GetParty = /*#__PURE__*/command<{ party_id: Snowflake }, Party>({
     path() { return `/party/${this.party_id}`; }

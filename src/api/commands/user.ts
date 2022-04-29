@@ -1,5 +1,6 @@
 import { command, CommandFlags } from "../command";
-import { Friend, Session, UserPreferences } from "../../models";
+
+import type { Friend, Session, UserPreferences } from "../../models";
 
 export interface UserRegisterForm {
     email: string,

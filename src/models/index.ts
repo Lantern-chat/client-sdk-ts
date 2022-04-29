@@ -14,6 +14,12 @@ export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
 
+export interface ServerConfig {
+    hcaptcha_string: string,
+    cdn: string,
+    min_age: number,
+}
+
 export const enum UserFlags {
     Deleted = 1 << 0,
     Verified = 1 << 1,
@@ -288,8 +294,10 @@ export type PartialPartyMember = PartialBy<PartyMember, 'user'>;
 export interface Invite {
     code: string,
     party: PartialParty,
-    inviter: Snowflake,
-    description: string,
+    inviter?: Snowflake,
+    description?: string,
+    expires?: string,
+    remaining?: number,
 }
 
 export interface Role {
