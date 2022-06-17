@@ -1,6 +1,6 @@
 import { command, CommandFlags } from "../command";
 
-import type { Friend, Session, UserPreferences } from "../../models";
+import type { Friend, Session, UserPreferences, Snowflake } from "../../models";
 
 export interface UserRegisterForm {
     email: string,
@@ -38,6 +38,10 @@ export const GetSessions = /*#__PURE__*/command<{}, Array<Session>>({
 
 export const GetFriends = /*#__PURE__*/command<{}, Array<Friend>>({
     path: "/user/@me/friends"
+});
+
+export const SetUserAvatar = /*#__PURE__*/command.post<{ file_id: Snowflake }>({
+    path() { return `/user/@me/avatar/${this.file_id}`; }
 });
 
 export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({
