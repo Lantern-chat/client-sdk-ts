@@ -18,6 +18,14 @@ export interface ServerConfig {
     hcaptcha_string: string,
     cdn: string,
     min_age: number,
+    secure: boolean,
+    limits: ServerLimits,
+}
+
+export interface ServerLimits {
+    max_upload_size: number,
+    max_avatar_size: number,
+    max_avatar_pixels: number,
 }
 
 export const enum UserFlags {
