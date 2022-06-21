@@ -44,6 +44,10 @@ export const SetUserAvatar = /*#__PURE__*/command.post<{ file_id: Snowflake }>({
     path() { return `/user/@me/avatar/${this.file_id}`; }
 });
 
+export const DeleteUserAvatar = /*#__PURE__*/command.del({
+    path: "/user/@me/avatar"
+});
+
 export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({
     path: "/user/@me/prefs",
     body: "prefs",
