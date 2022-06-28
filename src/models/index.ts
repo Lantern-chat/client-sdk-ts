@@ -50,14 +50,41 @@ export const enum ElevationLevel {
     System = 4,
 }
 
+/**
+ * Unpacked values from UserProfile.bits
+ */
+export interface UserProfileSplitBits {
+    roundedness: number,
+    override_banner: boolean,
+    banner_color: number,
+}
+
+export interface UserProfile {
+    bits: number,
+    avatar?: string,
+    banner?: string,
+    status?: string,
+    bio?: string,
+}
+
+/**
+ * Unpacks the packed bits of the user profile
+ *
+ * @param param0 UserProfile
+ * @returns UserProfileSplitBits
+ */
+export const split_profile_bits = ({ bits }: UserProfile): UserProfileSplitBits => ({
+    roundedness: (bits & 0x7F) / 127.0,
+    override_banner: (bits & 0x80) != 0,
+    banner_color: bits >> 8
+});
+
 export interface User {
     id: Snowflake,
     username: string,
     discriminator: number,
     flags: number | UserFlags,
-    avatar: string | null,
-    status?: string,
-    bio?: string,
+    profile?: UserProfile,
     email?: string,
     preferences?: Partial<UserPreferences>,
 }
