@@ -61,10 +61,10 @@ export interface UserProfileSplitBits {
 
 export interface UserProfile {
     bits: number,
-    avatar?: string,
-    banner?: string,
-    status?: string,
-    bio?: string,
+    avatar?: string | null,
+    banner?: string | null,
+    status?: string | null,
+    bio?: string | null,
 }
 
 /**
@@ -84,7 +84,7 @@ export interface User {
     username: string,
     discriminator: number,
     flags: number | UserFlags,
-    profile?: UserProfile,
+    profile?: UserProfile | null,
     email?: string,
     preferences?: Partial<UserPreferences>,
 }
