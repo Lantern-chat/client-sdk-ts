@@ -381,3 +381,26 @@ export function parse_presence(p?: UserPresence): { status: PresenceStatus, is_m
 
     return { status, is_mobile };
 }
+
+export const enum AssetFlags {
+    QUALITY = 127, // lower 7 bits
+
+    HAS_ALPHA = 1 << 8,
+    ANIMATED = 1 << 9,
+
+    FORMAT_PNG = 1 << 10,
+    FORMAT_JPEG = 1 << 11,
+    FORMAT_GIF = 1 << 12,
+    FORMAT_AVIF = 1 << 13,
+    FORMAT_WEBM = 1 << 14,
+
+    /// All formats together, a bit for each shifted by the lowest
+    FORMATS = 0b11111 << 10,
+}
+
+export function asset_flags(quality: number, formats: AssetFlags, has_alpha: boolean = true, animated: boolean = true): AssetFlags {
+    return Math.max(Math.min(127, quality), 0) |
+        (formats & AssetFlags.FORMATS) |
+        (has_alpha ? AssetFlags.HAS_ALPHA : 0) |
+        (animated ? AssetFlags.ANIMATED : 0);
+}
