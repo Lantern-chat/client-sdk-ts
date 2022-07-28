@@ -148,6 +148,7 @@ export const enum UserPreferenceFlags {
     CompactView = 1 << 9,
     UsePlatformEmojis = 1 << 10,
     EnableSpellcheck = 1 << 11,
+    LowBandwidthMode = 1 << 12,
 
     DeveloperMode = 1 << 15,
 }
