@@ -135,7 +135,7 @@ export const FONT_NAMES: { [key in keyof typeof Font]: string } = {
     "OpenDyslexic": "Open Dyslexic",
 }
 
-export const enum UserPreferenceFlags {
+export enum UserPreferenceFlags {
     ReduceAnimations = 1 << 0,
     UnfocusPause = 1 << 1,
     LightMode = 1 << 2,
