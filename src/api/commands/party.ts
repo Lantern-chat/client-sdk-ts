@@ -1,5 +1,5 @@
 import { command } from "../command";
-import type { Party, PartyMember, Room, Snowflake, Invite } from "../../models";
+import type { Party, PartyMember, Room, Snowflake, Invite, UserProfile } from "../../models";
 
 export const GetParty = /*#__PURE__*/command<{ party_id: Snowflake }, Party>({
     path() { return `/party/${this.party_id}`; }
@@ -25,4 +25,8 @@ export interface CreatePartyInviteForm {
 
 export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake }, Invite, CreatePartyInviteForm>({
     path() { return `/party/${this.party_id}/invites`; }
+});
+
+export const GetMemberProfile = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake }, UserProfile>({
+    path() { return `/party/${this.party_id}/members/${this.user_id}/profile`; }
 });
