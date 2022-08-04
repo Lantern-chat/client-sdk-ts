@@ -55,8 +55,8 @@ export const enum ElevationLevel {
  */
 export interface UserProfileSplitBits {
     roundedness: number,
-    override_banner: boolean,
-    banner_color: number,
+    override_color: boolean,
+    color: number,
 }
 
 export interface UserProfile {
@@ -75,8 +75,8 @@ export interface UserProfile {
  */
 export const split_profile_bits = ({ bits }: UserProfile): UserProfileSplitBits => ({
     roundedness: (bits & 0x7F) / 127.0,
-    override_banner: (bits & 0x80) != 0,
-    banner_color: bits >> 8
+    override_color: (bits & 0x80) != 0,
+    color: bits >> 8
 });
 
 export interface User {

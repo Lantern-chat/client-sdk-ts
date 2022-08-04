@@ -30,3 +30,8 @@ export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake
 export const GetMemberProfile = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake }, UserProfile>({
     path() { return `/party/${this.party_id}/members/${this.user_id}/profile`; }
 });
+
+export const UpdateMemberProfile = /*#__PURE__*/command.patch<{ party_id: Snowflake, profile: UserProfile }, UserProfile, UserProfile>({
+    path() { return `/party/${this.party_id}/members/profile`; },
+    body: 'profile',
+});
