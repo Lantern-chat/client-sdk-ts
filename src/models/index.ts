@@ -149,6 +149,7 @@ export enum UserPreferenceFlags {
     UsePlatformEmojis = 1 << 10,
     EnableSpellcheck = 1 << 11,
     LowBandwidthMode = 1 << 12,
+    ForceColorConstrast = 1 << 13,
 
     DeveloperMode = 1 << 15,
 }
