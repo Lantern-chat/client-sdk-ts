@@ -173,10 +173,11 @@ export function hasUserPrefFlag(prefs: Pick<UserPreferences, 'flags'>, flag: Use
 }
 
 export const enum UserPresenceFlags {
-    Online = 1 << 0,
-    Away = 1 << 1,
-    Busy = 1 << 2,
-    Mobile = 1 << 3,
+    Away = 1 << 0,
+    Mobile = 1 << 1,
+    Online = 1 << 2,
+    Busy = 1 << 3,
+    Invisible = 1 << 4,
 }
 
 export interface UserPresence {

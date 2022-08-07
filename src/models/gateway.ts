@@ -142,7 +142,7 @@ export interface MessageDeleteEvent {
 
 export interface UserPresenceUpdateEvent {
     user: User,
-    party?: Snowflake,
+    party_id?: Snowflake,
     presence: UserPresence,
 }
 
