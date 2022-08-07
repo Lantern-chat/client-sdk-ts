@@ -25,7 +25,12 @@ export interface ServerConfig {
 export interface ServerLimits {
     max_upload_size: number,
     max_avatar_size: number,
+    max_banner_size: number,
     max_avatar_pixels: number,
+    max_banner_pixels: number,
+    avatar_width: number,
+    banner_width: number,
+    banner_height: number,
 }
 
 export const enum UserFlags {
