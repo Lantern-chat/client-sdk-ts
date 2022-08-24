@@ -100,7 +100,7 @@ export class Driver {
         }
     }
 
-    async patch_file(file_id: Snowflake, offset: number, body: ArrayBuffer, progress?: (e: ProgressEvent) => void): Promise<number> {
+    async patch_file(file_id: Snowflake, offset: number, body: ArrayBuffer, onprogress?: (e: ProgressEvent) => void): Promise<number> {
         if(!this.auth) {
             throw new DriverError({ code: DriverErrorCode.MissingAuthorization });
         }
@@ -114,7 +114,7 @@ export class Driver {
                 method: XHRMethod.PATCH,
                 upload: true,
                 url: path,
-                onprogress: progress,
+                onprogress,
                 headers: {
                     "Authorization": this.auth?.format(),
                     "Upload-Offset": offset.toString(),
