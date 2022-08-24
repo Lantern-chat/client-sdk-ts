@@ -6,6 +6,12 @@ import type { Command } from "../api/command";
 
 const CHUNK_SIZE = 1024 * 1024 * 8;
 
+export interface IStreamUpload {
+    id: number,
+    meta: Omit<CreateFileBody, 'size'>,
+    stream: Blob,
+}
+
 export class Client {
     driver: Driver;
 
@@ -21,9 +27,7 @@ export class Client {
         return this.driver.execute(cmd);
     }
 
-    async upload_stream(meta: Omit<CreateFileBody, 'size'>, stream: Blob, onprogress?: (sent: number, total: number) => void): Promise<Snowflake> {
-        let file_id = await this.driver.execute(CreateFile({ params: { ...meta, size: stream.size } }));
-
+    async upload_stream_id(file_id: Snowflake, stream: Blob, onprogress?: (sent: number, total: number) => void): Promise<Snowflake> {
         let offset = 0;
 
         while(offset < stream.size) {
@@ -42,5 +46,25 @@ export class Client {
         }
 
         return file_id;
+    }
+
+    create_file(meta: Omit<CreateFileBody, 'size'>, stream: Blob): Promise<Snowflake> {
+        return this.driver.execute(CreateFile({ params: { ...meta, size: stream.size } }));
+    }
+
+    async upload_stream(meta: Omit<CreateFileBody, 'size'>, stream: Blob, onprogress?: (sent: number, total: number) => void): Promise<Snowflake> {
+        let file_id = await this.create_file(meta, stream);
+        return this.upload_stream_id(file_id, stream, onprogress);
+    }
+
+    async upload_streams(streams: Array<IStreamUpload>, onprogress?: (id: number, sent: number, total: number) => void): Promise<Array<Snowflake>> {
+        let uploads = [];
+
+        for(let s of streams) {
+            let file_id = await this.create_file(s.meta, s.stream);
+            uploads.push(this.upload_stream_id(file_id, s.stream, (sent, total) => onprogress?.(s.id, sent, total)));
+        }
+
+        return await Promise.all(uploads);
     }
 }

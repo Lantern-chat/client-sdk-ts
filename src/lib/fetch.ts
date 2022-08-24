@@ -30,12 +30,14 @@ export function fetch(params: string | XHRParameters): Promise<XMLHttpRequest> {
                 params = { url: params };
             }
 
-            let xhr = new XMLHttpRequest(), ev = params.upload ? xhr.upload : xhr;
+            let xhr = new XMLHttpRequest();
             xhr.responseType = params.type || "json";
 
             if(params.timeout) { xhr.timeout = params.timeout; }
 
             xhr.open(params.method || "GET", params.url);
+
+            let ev = params.upload ? xhr.upload : xhr;
 
             ev.onprogress = params.onprogress || null;
             ev.onerror = (e: ProgressEvent) => reject(e);
