@@ -35,6 +35,8 @@ export function fetch(params: string | XHRParameters): Promise<XMLHttpRequest> {
 
             if(params.timeout) { xhr.timeout = params.timeout; }
 
+            xhr.open(params.method || "GET", params.url);
+
             ev.onprogress = params.onprogress || null;
             ev.onerror = (e: ProgressEvent) => reject(e);
 
@@ -45,8 +47,6 @@ export function fetch(params: string | XHRParameters): Promise<XMLHttpRequest> {
                 if(xhr.status >= 200 && xhr.status < 400) { resolve(xhr); }
                 else { reject(xhr); }
             });
-
-            xhr.open(params.method || "GET", params.url);
 
             if(params.headers) {
                 for(let key in params.headers) {

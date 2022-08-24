@@ -37,6 +37,8 @@ export class Client {
             if(offset != expected_offset) {
                 // TODO: throw error
             }
+
+            onprogress?.(expected_offset, stream.size);
         }
 
         return file_id;
