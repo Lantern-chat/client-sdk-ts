@@ -155,7 +155,7 @@ export enum UserPreferenceFlags {
     EnableSpellcheck = 1 << 11,
     LowBandwidthMode = 1 << 12,
     ForceColorConstrast = 1 << 13,
-
+    ShowMediaMetadata = 1 << 14,
     DeveloperMode = 1 << 15,
 }
 
