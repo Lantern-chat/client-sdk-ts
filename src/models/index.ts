@@ -257,16 +257,16 @@ export interface Message {
 
 export type Reaction = ReactionShorthand | ReactionFull;
 
-export interface ReactionShorthand {
-    emote: Snowflake,
+export type EmoteOrEmoji = { emote: Snowflake } | { emoji: string };
+
+export type ReactionShorthand = EmoteOrEmoji & {
     own: boolean,
     count: number,
-}
+};
 
-export interface ReactionFull {
-    emote: Emote,
+export type ReactionFull = EmoteOrEmoji & {
     users: Snowflake[],
-}
+};
 
 export interface EmbedMediaAttributes {
     title?: string,
@@ -358,7 +358,7 @@ export interface Role {
 export interface CustomEmote {
     id: Snowflake,
     party_id: Snowflake,
-    file: Snowflake,
+    asset: Snowflake,
     name: string,
     flags: number,
     aspect_ratio: number,
