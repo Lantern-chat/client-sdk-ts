@@ -260,7 +260,7 @@ export type Reaction = ReactionShorthand | ReactionFull;
 export type EmoteOrEmoji = { emote: Snowflake } | { emoji: string };
 
 export type ReactionShorthand = EmoteOrEmoji & {
-    own: boolean,
+    me: boolean,
     count: number,
 };
 

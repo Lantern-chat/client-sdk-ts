@@ -115,6 +115,7 @@ function makeMethodCommand(method: XHRMethod): typeof command {
 }
 
 command.get = /*#__PURE__*/makeMethodCommand(XHRMethod.GET);
+command.put = /*#__PURE__*/makeMethodCommand(XHRMethod.PUT);
 command.post = /*#__PURE__*/makeMethodCommand(XHRMethod.POST);
 command.patch = /*#__PURE__*/makeMethodCommand(XHRMethod.PATCH);
 command.del = /*#__PURE__*/makeMethodCommand(XHRMethod.DELETE);
