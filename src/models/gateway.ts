@@ -1,4 +1,4 @@
-import type { Snowflake, User, Room, Party, PartyMember, Message, Role, UserPresence } from "../models";
+import type { Snowflake, User, Room, Party, PartyMember, Message, Role, UserPresence, EmoteOrEmoji } from "../models";
 
 export const enum Intent {
     PARTIES = 1 << 0,
@@ -92,6 +92,9 @@ export type ServerMsg =
     | IServerMsg<ServerMsgOpcode.MessageUpdate, Message>
     | IServerMsg<ServerMsgOpcode.MessageDelete, MessageDeleteEvent>
 
+    | IServerMsg<ServerMsgOpcode.MessageReactionAdd, MessageUserReactionEvent>
+    | IServerMsg<ServerMsgOpcode.MessageReactionRemove, MessageUserReactionEvent>
+
     | IServerMsg<ServerMsgOpcode.PresenceUpdate, UserPresenceUpdateEvent>
 
     | IServerMsg<ServerMsgOpcode.TypingStart, TypingStartEvent>
@@ -138,6 +141,15 @@ export interface MessageDeleteEvent {
     id: Snowflake,
     room_id: Snowflake,
     party_id?: Snowflake,
+}
+
+export interface MessageUserReactionEvent {
+    user_id: Snowflake,
+    room_id: Snowflake,
+    party_id?: Snowflake,
+    msg_id: Snowflake,
+    member?: PartyMember,
+    emote: EmoteOrEmoji,
 }
 
 export interface UserPresenceUpdateEvent {
