@@ -66,6 +66,7 @@ export interface UserProfileSplitBits {
 
 export interface UserProfile {
     bits: number,
+    nick?: string | null,
     avatar?: string | null,
     banner?: string | null,
     status?: string | null,
@@ -328,7 +329,6 @@ export interface Party extends PartialParty {
 
 export interface PartyMember {
     user: User,
-    nick: string | null,
     roles?: Snowflake[],
     presence?: UserPresence,
 }
