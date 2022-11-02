@@ -50,6 +50,7 @@ export const enum ServerMsgOpcode {
     PresenceUpdate = 26,
     TypingStart = 27,
     UserUpdate = 28,
+    ProfileUpdate = 29,
 }
 
 export const enum ClientMsgOpcode {
@@ -100,6 +101,7 @@ export type ServerMsg =
     | IServerMsg<ServerMsgOpcode.TypingStart, TypingStartEvent>
 
     | IServerMsg<ServerMsgOpcode.UserUpdate, { user: User }>
+    | IServerMsg<ServerMsgOpcode.ProfileUpdate, ProfileUpdateEvent>
     ;
 
 export interface ReadyEvent {
@@ -110,9 +112,9 @@ export interface ReadyEvent {
 }
 
 export interface TypingStartEvent {
-    room: Snowflake,
-    party?: Snowflake,
-    user: Snowflake,
+    room_id: Snowflake,
+    party_id?: Snowflake,
+    user_id: Snowflake,
     member?: PartyMember,
 }
 
@@ -158,11 +160,9 @@ export interface UserPresenceUpdateEvent {
     presence: UserPresence,
 }
 
-export interface TypingStartEvent {
-    room: Snowflake,
-    party?: Snowflake,
-    user: Snowflake,
-    member?: PartyMember,
+export interface ProfileUpdateEvent {
+    party_id?: Snowflake,
+    user: User,
 }
 
 export type IClientMsg<Opcode extends ClientMsgOpcode, Payload = undefined>
