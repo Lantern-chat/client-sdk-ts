@@ -20,6 +20,8 @@ export interface ServerConfig {
     min_age: number,
     secure: boolean,
     limits: ServerLimits,
+    /// If true, pass embedded content through a "camo"/camouflage route at `${cdn}/camo/base64_url/url_signature`
+    camo: boolean,
 }
 
 export interface ServerLimits {
