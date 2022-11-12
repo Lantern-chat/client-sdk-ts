@@ -16,8 +16,9 @@ export const enum Intent {
     DIRECT_MESSAGES = 1 << 12,
     DIRECT_MESSAGE_REACTIONS = 1 << 13,
     DIRECT_MESSAGE_TYPING = 1 << 14,
+    PROFILE_UPDATES = 1 << 15,
 
-    ALL = (1 << 15) - 1, // all 1s
+    ALL = (1 << 16) - 1, // all 1s
 }
 
 export const enum ServerMsgOpcode {
