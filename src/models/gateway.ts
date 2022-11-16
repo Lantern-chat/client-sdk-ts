@@ -1,4 +1,4 @@
-import type { Snowflake, User, Room, Party, PartyMember, Message, Role, UserPresence, EmoteOrEmoji } from "../models";
+import type { Snowflake, User, Room, Party, PartyMember, Message, Role, UserPresence, EmoteOrEmoji, Friend } from "../models";
 
 export const enum Intent {
     PARTIES = 1 << 0,
@@ -52,6 +52,8 @@ export const enum ServerMsgOpcode {
     TypingStart = 27,
     UserUpdate = 28,
     ProfileUpdate = 29,
+    FriendAdd = 30,
+    FriendRemove = 31,
 }
 
 export const enum ClientMsgOpcode {
@@ -103,6 +105,8 @@ export type ServerMsg =
 
     | IServerMsg<ServerMsgOpcode.UserUpdate, { user: User }>
     | IServerMsg<ServerMsgOpcode.ProfileUpdate, ProfileUpdateEvent>
+    | IServerMsg<ServerMsgOpcode.FriendAdd, Friend>
+    | IServerMsg<ServerMsgOpcode.FriendRemove, { user_id: Snowflake }>
     ;
 
 export interface ReadyEvent {

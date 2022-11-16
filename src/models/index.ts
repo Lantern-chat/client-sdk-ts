@@ -196,9 +196,15 @@ export interface UserPresence {
 
 export interface Activity { }
 
+export const enum FriendFlags {
+    Accepted = 1 << 0,
+    Pending = 1 << 1,
+    Favorite = 1 << 2,
+}
+
 export interface Friend {
     note?: string,
-    flags: number,
+    flags: FriendFlags,
     user: User,
 }
 
