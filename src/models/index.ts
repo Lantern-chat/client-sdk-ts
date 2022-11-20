@@ -14,6 +14,9 @@ export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
 
+/// ISO 8601 timestamp
+export type Timestamp = string;
+
 export interface ServerConfig {
     hcaptcha_string: string,
     cdn: string,
@@ -190,22 +193,28 @@ export const enum UserPresenceFlags {
 
 export interface UserPresence {
     flags: number | UserPresenceFlags,
-    updated_at?: string,
+    updated_at?: Timestamp,
     activity?: Activity,
 }
 
 export interface Activity { }
 
 export const enum FriendFlags {
+    /// If the friend-request has been accepted
     Accepted = 1 << 0,
-    Pending = 1 << 1,
-    Favorite = 1 << 2,
+
+    /// If the other user added the current user first
+    AddedBy = 1 << 1,
+
+    /// Pins the user to the top of their friendlist
+    Favorite = 1 << 6,
 }
 
 export interface Friend {
     note?: string,
     flags: FriendFlags,
     user: User,
+    since: Timestamp,
 }
 
 export const enum RoomFlags {
@@ -252,8 +261,8 @@ export interface Message {
     author: User,
     member?: PartialPartyMember,
     thread_id?: Snowflake,
-    created_at: string,
-    edited_at?: string,
+    created_at: Timestamp,
+    edited_at?: Timestamp,
     content?: string,
     flags: number | MessageFlags,
     user_mentions?: Snowflake[],
