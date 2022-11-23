@@ -50,6 +50,7 @@ export enum ApiErrorCode {
     WebsocketError = 40032,
     MissingContentTypeHeader = 40033,
     Blocked = 40034,
+    Banned = 40035,
 
     // Generic HTTP-like error codes
     BadRequest = 40400,

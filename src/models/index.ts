@@ -39,7 +39,7 @@ export interface ServerLimits {
 }
 
 export const enum UserFlags {
-    Deleted = 1 << 0,
+    Banned = 1 << 0,
     Verified = 1 << 1,
     MfaEnabled = 1 << 2,
 
