@@ -163,6 +163,7 @@ export enum UserPreferenceFlags {
     ForceColorConstrast = 1 << 13,
     ShowMediaMetadata = 1 << 14,
     DeveloperMode = 1 << 15,
+    ShowDateChange = 1 << 16,
 }
 
 export interface UserPreferences {
