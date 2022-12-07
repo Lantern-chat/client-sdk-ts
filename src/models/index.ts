@@ -129,12 +129,13 @@ export interface Session extends AnonymousSession {
 
 export enum Font {
     SansSerif = 0,
-    Serif,
-    Monospace,
-    Cursive,
-    ComicSans,
+    Serif = 1,
+    Monospace = 2,
+    Cursive = 3,
+    ComicSans = 4,
 
     OpenDyslexic = 30,
+    AtkinsonHyperlegible = 31,
 }
 
 export const FONT_NAMES: { [key in keyof typeof Font]: string } = {
@@ -144,6 +145,7 @@ export const FONT_NAMES: { [key in keyof typeof Font]: string } = {
     "Cursive": "Cursive",
     "ComicSans": "Comis Sans",
     "OpenDyslexic": "Open Dyslexic",
+    "AtkinsonHyperlegible": "Atkinson Hyperlegible",
 }
 
 export enum UserPreferenceFlags {
