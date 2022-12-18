@@ -1,6 +1,6 @@
 import { command, CommandFlags } from "../command";
 
-import type { Friend, Session, UserPreferences, Snowflake, UserProfile } from "../../models";
+import type { Friend, Session, UserPreferences, Snowflake, UserProfile, FullUser } from "../../models";
 
 export interface UserRegisterForm {
     email: string,
@@ -36,8 +36,31 @@ export const GetSessions = /*#__PURE__*/command<{}, Array<Session>>({
     path: "/user/@me/sessions"
 });
 
+/// Clears all **other** sessions.
+export const ClearSessions = /*#__PURE__*/command.del({
+    path: "/user/@me/sessions"
+});
+
 export const GetFriends = /*#__PURE__*/command<{}, Array<Friend>>({
     path: "/user/@me/friends"
+});
+
+export const AddFriend = /*#__PURE__*/command.post<{ user_id: Snowflake }, Friend>({
+    path() { return `/user/@me/friends/${this.user_id}`; }
+});
+
+export const RemoveFriend = /*#__PURE__*/command.del<{ user_id: Snowflake }, Friend>({
+    path() { return `/user/@me/friends/${this.user_id}`; }
+});
+
+export interface PatchFriendForm {
+    fav?: boolean,
+    note?: string,
+}
+
+export const PatchFriend = /*#__PURE__*/command.patch<{ user_id: Snowflake, form: PatchFriendForm }, Friend, PatchFriendForm>({
+    path() { return `/user/@me/friends/${this.user_id}`; },
+    body: "form"
 });
 
 export const UpdateUserProfile = /*#__PURE__*/command.patch<{ profile: UserProfile }, UserProfile, UserProfile>({
@@ -45,8 +68,8 @@ export const UpdateUserProfile = /*#__PURE__*/command.patch<{ profile: UserProfi
     body: 'profile',
 });
 
-export const GetUserProfile = /*#__PURE__*/command.get<{ user_id: Snowflake }, UserProfile>({
-    path() { return `/user/${this.user_id}/profile`; }
+export const GetUser = /*#__PURE__*/command.get<{ user_id: Snowflake }, FullUser>({
+    path() { return `/user/${this.user_id}`; }
 });
 
 export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ prefs: Partial<UserPreferences> }, null, Partial<UserPreferences>>({

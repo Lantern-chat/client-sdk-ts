@@ -1,5 +1,5 @@
 import { command } from "../command";
-import type { Party, PartyMember, Room, Snowflake, Invite, UserProfile } from "../../models";
+import type { Party, PartyMember, Room, Snowflake, Invite, UserProfile, FullPartyMember } from "../../models";
 
 export const GetParty = /*#__PURE__*/command<{ party_id: Snowflake }, Party>({
     path() { return `/party/${this.party_id}`; }
@@ -27,8 +27,8 @@ export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake
     path() { return `/party/${this.party_id}/invites`; }
 });
 
-export const GetMemberProfile = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake }, UserProfile>({
-    path() { return `/party/${this.party_id}/members/${this.user_id}/profile`; }
+export const GetMember = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake }, FullPartyMember>({
+    path() { return `/party/${this.party_id}/members/${this.user_id}`; }
 });
 
 export const UpdateMemberProfile = /*#__PURE__*/command.patch<{ party_id: Snowflake, profile: UserProfile }, UserProfile, UserProfile>({

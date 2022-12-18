@@ -95,6 +95,7 @@ export interface User {
     username: string,
     discriminator: number,
     flags: number | UserFlags,
+    last_active?: Timestamp,
     profile?: UserProfile | null,
     email?: string,
     preferences?: Partial<UserPreferences>,
@@ -117,6 +118,17 @@ export function user_is_system(user: User): boolean {
 
 export function user_is_bot(user: User): boolean {
     return (user.flags & 64) === 64;
+}
+
+export const enum UserRelationship {
+    /// You share a party
+    ASSOCIATED = 1 << 0,
+    FRIENDS = 1 << 1,
+    BLOCKED = 1 << 2,
+}
+
+export interface FullUser extends User {
+    relation: number | UserRelationship,
 }
 
 export interface AnonymousSession {
@@ -166,6 +178,7 @@ export enum UserPreferenceFlags {
     ShowMediaMetadata = 1 << 14,
     DeveloperMode = 1 << 15,
     ShowDateChange = 1 << 16,
+    HideLastActive = 1 << 17,
 }
 
 export interface UserPreferences {
@@ -354,6 +367,10 @@ export interface PartyMember {
 }
 
 export type PartialPartyMember = PartialBy<PartyMember, 'user'>;
+
+export interface FullPartyMember extends PartyMember {
+    user: FullUser,
+}
 
 export interface Invite {
     code: string,
