@@ -95,10 +95,10 @@ export interface User {
     username: string,
     discriminator: number,
     flags: number | UserFlags,
-    last_active?: Timestamp,
     profile?: UserProfile | null,
     email?: string,
     preferences?: Partial<UserPreferences>,
+    presence: UserPresence,
 }
 
 export function parse_user_elevation(user: User): ElevationLevel | undefined {
@@ -210,6 +210,7 @@ export const enum UserPresenceFlags {
 export interface UserPresence {
     flags: number | UserPresenceFlags,
     updated_at?: Timestamp,
+    last_active?: Timestamp,
     activity?: Activity,
 }
 
@@ -360,16 +361,14 @@ export interface Party extends PartialParty {
     default_room: Snowflake,
 }
 
-export interface PartyMember {
-    user: User,
+export interface PartialPartyMember {
+    joined_at: Timestamp,
     roles?: Snowflake[],
-    presence?: UserPresence,
+    flags?: number,
 }
 
-export type PartialPartyMember = PartialBy<PartyMember, 'user'>;
-
-export interface FullPartyMember extends PartyMember {
-    user: FullUser,
+export interface PartyMember extends PartialPartyMember {
+    user: User,
 }
 
 export interface Invite {
