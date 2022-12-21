@@ -268,6 +268,8 @@ export const enum MessageFlags {
 export const enum MessageKind {
     Normal = 0,
     Welcome = 1,
+    Ephemeral = 2,
+    Unavailable = 3,
 }
 
 export interface Message {
