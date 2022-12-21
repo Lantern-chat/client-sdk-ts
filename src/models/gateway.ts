@@ -162,7 +162,6 @@ export interface MessageUserReactionEvent {
 export interface UserPresenceUpdateEvent {
     user: User,
     party_id?: Snowflake,
-    presence: UserPresence,
 }
 
 export interface ProfileUpdateEvent {
