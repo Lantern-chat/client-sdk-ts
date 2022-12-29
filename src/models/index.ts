@@ -364,7 +364,8 @@ export interface Party extends PartialParty {
 }
 
 export interface PartialPartyMember {
-    joined_at: Timestamp,
+    // Will be null if the user is no longer a member
+    joined_at: Timestamp | null,
     roles?: Snowflake[],
     flags?: number,
 }
