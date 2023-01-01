@@ -1,6 +1,6 @@
 import { command, CommandFlags } from "../command";
 
-import type { Friend, Session, UserPreferences, Snowflake, UserProfile, FullUser } from "../../models";
+import type { Relationship, Session, UserPreferences, Snowflake, UserProfile, User, UserRelationship } from "../../models";
 
 export interface UserRegisterForm {
     email: string,
@@ -41,25 +41,17 @@ export const ClearSessions = /*#__PURE__*/command.del({
     path: "/user/@me/sessions"
 });
 
-export const GetFriends = /*#__PURE__*/command<{}, Array<Friend>>({
-    path: "/user/@me/friends"
+export const GetRelationships = /*#__PURE__*/command<{}, Array<Relationship>>({
+    path: "/user/@me/relationships"
 });
 
-export const AddFriend = /*#__PURE__*/command.post<{ user_id: Snowflake }, Friend>({
-    path() { return `/user/@me/friends/${this.user_id}`; }
-});
-
-export const RemoveFriend = /*#__PURE__*/command.del<{ user_id: Snowflake }, Friend>({
-    path() { return `/user/@me/friends/${this.user_id}`; }
-});
-
-export interface PatchFriendForm {
-    fav?: boolean,
-    note?: string,
+export interface PatchRelationshipForm {
+    rel?: UserRelationship | null,
+    note?: string | null,
 }
 
-export const PatchFriend = /*#__PURE__*/command.patch<{ user_id: Snowflake, form: PatchFriendForm }, Friend, PatchFriendForm>({
-    path() { return `/user/@me/friends/${this.user_id}`; },
+export const PatchRelationship = /*#__PURE__*/command.patch<{ user_id: Snowflake, form: PatchRelationshipForm }, Relationship, PatchRelationshipForm>({
+    path() { return `/user/@me/relationships/${this.user_id}`; },
     body: "form"
 });
 
@@ -68,7 +60,7 @@ export const UpdateUserProfile = /*#__PURE__*/command.patch<{ profile: UserProfi
     body: 'profile',
 });
 
-export const GetUser = /*#__PURE__*/command.get<{ user_id: Snowflake }, FullUser>({
+export const GetUser = /*#__PURE__*/command.get<{ user_id: Snowflake }, User>({
     path() { return `/user/${this.user_id}`; }
 });
 

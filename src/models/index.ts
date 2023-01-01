@@ -120,17 +120,6 @@ export function user_is_bot(user: User): boolean {
     return (user.flags & 64) === 64;
 }
 
-export const enum UserRelationship {
-    /// You share a party
-    ASSOCIATED = 1 << 0,
-    FRIENDS = 1 << 1,
-    BLOCKED = 1 << 2,
-}
-
-export interface FullUser extends User {
-    relation: number | UserRelationship,
-}
-
 export interface AnonymousSession {
     expires: string,
 }
@@ -216,22 +205,30 @@ export interface UserPresence {
 
 export interface Activity { }
 
-export const enum FriendFlags {
-    /// If the friend-request has been accepted
-    Accepted = 1 << 0,
+export const enum UserRelationship {
+    None = 0,
 
-    /// If the other user added the current user first
-    AddedBy = 1 << 1,
+    Friend = 1,
 
-    /// Pins the user to the top of their friendlist
-    Favorite = 1 << 6,
+    //
+    // reserve some space for future relationships
+    //
+
+    /// Normal user blocking
+    Blocked = 100,
+
+    /// Blocking + hide messages from the blocked user
+    BlockedDangerous = 101,
 }
 
-export interface Friend {
+export interface Relationship {
     note?: string,
-    flags: FriendFlags,
     user: User,
     since: Timestamp,
+    rel: UserRelationship,
+
+    /// If this relationship is awaiting action from you
+    pending?: boolean,
 }
 
 export const enum RoomFlags {
