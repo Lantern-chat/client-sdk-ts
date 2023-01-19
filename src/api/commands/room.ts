@@ -1,5 +1,5 @@
 import { command } from "../command";
-import type { EmoteOrEmoji, Message, Reaction, Snowflake } from "../../models";
+import type { Cursor, EmoteOrEmoji, Message, Reaction, Snowflake } from "../../models";
 import { RoomPermissions, union, cond } from "../../models/permission";
 
 function encode_emote_or_emoji(e: EmoteOrEmoji): string {
@@ -38,10 +38,8 @@ export const GetMessage = /*#__PURE__*/command<{ room_id: Snowflake, msg_id: Sno
     path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
 });
 
-export interface GetMessagesBody {
+export type GetMessagesBody = Partial<Cursor> & {
     thread?: Snowflake,
-    before?: Snowflake,
-    after?: Snowflake,
     limit?: number
 }
 

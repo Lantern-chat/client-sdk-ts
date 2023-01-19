@@ -17,6 +17,8 @@ export type Snowflake = Exclude<string, "0" | 0>;
 /// ISO 8601 timestamp
 export type Timestamp = string;
 
+export type Cursor = { after: Snowflake } | { before: Snowflake } | { exact: Snowflake };
+
 export interface ServerConfig {
     hcaptcha_string: string,
     cdn: string,
