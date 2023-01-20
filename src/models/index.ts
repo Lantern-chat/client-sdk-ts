@@ -259,9 +259,8 @@ export const enum MessageFlags {
     Deleted = 1 << 0,
     MentionsEveryone = 1 << 1,
     MentionsHere = 1 << 2,
-    Pinned = 1 << 3,
-    TTS = 1 << 4,
-    SupressEmbeds = 1 << 5,
+    TTS = 1 << 3,
+    SupressEmbeds = 1 << 4,
 }
 
 export const enum MessageKind {
@@ -289,6 +288,15 @@ export interface Message {
     reactions?: Reaction[],
     attachments?: Attachment[],
     embeds?: Embed[],
+    pins?: Snowflake[],
+    starred?: boolean,
+}
+
+export interface PinFolder {
+    id: Snowflake,
+    name: string,
+    icon_id?: Snowflake,
+    description?: string,
 }
 
 export type Reaction = ReactionShorthand | ReactionFull;

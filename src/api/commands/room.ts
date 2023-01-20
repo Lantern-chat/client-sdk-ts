@@ -40,7 +40,9 @@ export const GetMessage = /*#__PURE__*/command<{ room_id: Snowflake, msg_id: Sno
 
 export type GetMessagesBody = Partial<Cursor> & {
     thread?: Snowflake,
-    limit?: number
+    limit?: number,
+    pinned?: boolean,
+    starred?: boolean,
 }
 
 export const GetMessages = /*#__PURE__*/command<{ room_id: Snowflake, query: GetMessagesBody }, Array<Message>, GetMessagesBody>({
