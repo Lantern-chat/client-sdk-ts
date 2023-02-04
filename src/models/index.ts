@@ -170,6 +170,7 @@ export enum UserPreferenceFlags {
     DeveloperMode = 1 << 15,
     ShowDateChange = 1 << 16,
     HideLastActive = 1 << 17,
+    ShowGreyImageBg = 1 << 18,
 }
 
 export interface UserPreferences {
