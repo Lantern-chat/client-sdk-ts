@@ -11,6 +11,10 @@ export * as perms from "./permission";
 export type { ServerMsg, ClientMsg } from "./gateway";
 export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 
+export { EmbedType } from "./embed"
+export type { Embed, EmbedV1, EmbedMedia, EmbedAuthor, EmbedField, EmbedFooter, EmbedProvider } from "./embed";
+import type { Embed } from "./embed";
+
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
 
@@ -171,6 +175,7 @@ export enum UserPreferenceFlags {
     ShowDateChange = 1 << 16,
     HideLastActive = 1 << 17,
     ShowGreyImageBg = 1 << 18,
+    ShowAttachmentGrid = 1 << 19,
 }
 
 export interface UserPreferences {
@@ -313,28 +318,6 @@ export type ReactionFull = EmoteOrEmoji & {
     users: Snowflake[],
 };
 
-export interface EmbedMediaAttributes {
-    title?: string,
-    description?: string,
-    url?: string,
-    ts?: string,
-    color?: number,
-}
-
-export const enum EmbedMediaKind {
-    Image = "image",
-    Video = "video",
-    Audio = "audio",
-    Thumbnail = "thumbnail",
-}
-
-export interface EmbedMedia extends EmbedMediaAttributes {
-    type: EmbedMediaKind,
-}
-
-export interface Embed {
-    // TODO
-}
 
 export interface File {
     id: Snowflake,
