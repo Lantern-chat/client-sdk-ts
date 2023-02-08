@@ -207,7 +207,9 @@ export const enum UserPresenceFlags {
 export interface UserPresence {
     flags: number | UserPresenceFlags,
     updated_at?: Timestamp,
-    last_active?: Timestamp,
+
+    /// Approximate Time since last active, in decaseconds
+    last_active?: number,
     activity?: Activity,
 }
 
