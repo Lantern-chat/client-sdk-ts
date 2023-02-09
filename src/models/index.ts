@@ -176,6 +176,7 @@ export enum UserPreferenceFlags {
     HideLastActive = 1 << 17,
     ShowGreyImageBg = 1 << 18,
     ShowAttachmentGrid = 1 << 19,
+    SmallerAttachments = 1 << 20,
 }
 
 export interface UserPreferences {
