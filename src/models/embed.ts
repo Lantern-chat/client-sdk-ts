@@ -9,50 +9,85 @@ export const enum EmbedType {
     Article = "article",
 }
 
+export const enum EmbedFlags {
+    Spoiler = 1 << 0,
+    Adult = 1 << 1,
+}
+
 export interface EmbedMedia {
-    url?: string,
+    // URL
+    u?: string,
     alt?: string,
-    proxy_url?: string,
-    width?: number,
-    height?: number,
-    mime?: string,
+    /// Cryptographic Signature
+    s?: string,
+
+    /// Width
+    w?: number,
+    /// Height
+    h?: number,
+
+    /// MIME type
+    m?: string,
 }
 
 export interface EmbedProvider {
-    name?: string,
-    url?: string,
+    /// Name
+    n?: string,
+    /// URL
+    u?: string,
+    /// Icon media
+    i?: EmbedMedia,
 }
 
 export interface EmbedAuthor {
-    name: string,
-    url?: string,
-    icon?: EmbedMedia,
+    /// Name
+    n: string,
+    /// URL
+    u?: string,
+    /// Icon Media
+    i?: EmbedMedia,
 }
 
 export interface EmbedField {
-    name: string,
-    value: string,
+    /// Name
+    n: string,
+    /// Value
+    v: string,
 
-    inline?: boolean,
+    img?: EmbedMedia,
+
+    /// Block layout
+    b?: boolean
 }
 
 export interface EmbedFooter {
-    text: string,
+    /// Text
+    t: string,
 
-    icon?: EmbedMedia,
+    /// Icon Media
+    i?: EmbedMedia,
 }
 
 export interface EmbedV1 {
     v: 1,
 
     ts: Timestamp,
-    url?: string,
+    /// URL
+    u?: string,
     ty: EmbedType,
-    title?: string,
-    desc?: string,
-    col?: number,
-    author?: EmbedAuthor,
-    pro?: EmbedProvider,
+    /// Title
+    t?: string,
+    /// Description
+    d?: string,
+    /// Canonical URL
+    c?: string,
+
+    /// Accent color
+    ac?: number,
+    /// Author
+    au?: EmbedAuthor,
+    /// Provider
+    p?: EmbedProvider,
 
     obj?: EmbedMedia,
     img?: EmbedMedia,
@@ -61,6 +96,8 @@ export interface EmbedV1 {
     thumb?: EmbedMedia,
 
     fields?: EmbedField[],
+
+    footer?: EmbedFooter,
 }
 
 export type Embed = EmbedV1;
