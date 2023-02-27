@@ -75,6 +75,8 @@ export interface EmbedV1 {
     /// URL
     u?: string,
     ty: EmbedType,
+    /// Flags
+    f?: EmbedFlags,
     /// Title
     t?: string,
     /// Description
