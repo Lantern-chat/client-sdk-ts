@@ -11,7 +11,7 @@ export * as perms from "./permission";
 export type { ServerMsg, ClientMsg } from "./gateway";
 export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 
-export { EmbedType } from "./embed"
+export { EmbedType, EmbedFlags } from "./embed"
 export type { Embed, EmbedV1, EmbedMedia, EmbedAuthor, EmbedField, EmbedFooter, EmbedProvider } from "./embed";
 import type { Embed } from "./embed";
 
