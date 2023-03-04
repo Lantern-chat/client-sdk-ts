@@ -28,6 +28,9 @@ export interface EmbedMedia {
 
     /// MIME type
     m?: string,
+
+    /// Alternate media
+    a?: EmbedMedia,
 }
 
 export interface EmbedProvider {
