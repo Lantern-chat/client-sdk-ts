@@ -17,7 +17,8 @@ export const enum EmbedFlags {
 export interface EmbedMedia {
     // URL
     u?: string,
-    alt?: string,
+    /// Description/alt-text
+    d?: string,
     /// Cryptographic Signature
     s?: string,
 
