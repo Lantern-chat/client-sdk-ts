@@ -177,6 +177,7 @@ export enum UserPreferenceFlags {
     ShowGreyImageBg = 1 << 18,
     ShowAttachmentGrid = 1 << 19,
     SmallerAttachments = 1 << 20,
+    HideEmbeds = 1 << 21,
 }
 
 export interface UserPreferences {
