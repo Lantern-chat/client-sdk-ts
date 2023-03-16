@@ -1,132 +1,156 @@
-import type { Snowflake } from "../models";
+import type { Role, Snowflake } from "../models";
 
-export interface Permission {
-    party: number,
-    room: number,
-    stream: number,
+export type RawPermissions = string | number; // bigint
+
+export type IntoPermissions = PermissionBit | Permissions;
+
+const ONE: bigint = BigInt(1);
+function into(perms: IntoPermissions): bigint {
+    return perms instanceof Permissions ? perms.p : (ONE << BigInt(perms));
+}
+
+export class Permissions {
+    p: bigint;
+
+    constructor(raw: RawPermissions | Permissions | bigint = '0') {
+        this.p = raw instanceof Permissions ? raw.p : BigInt(raw);
+    }
+
+    /// Crates a new Permissions object with the same flags
+    clone() {
+        return new Permissions(this.p);
+    }
+
+    raw(): bigint {
+        return this.p;
+    }
+
+    has(p: IntoPermissions): boolean {
+        return (this.p & into(p)) == this.p;
+    }
+
+    /// Mutates the current Permissions object to add the given permissions
+    add(...perms: IntoPermissions[]): Permissions {
+        this.p = perms.reduce((perms: bigint, perm: IntoPermissions) => perms | into(perm), this.p);
+        return this;
+    }
+
+    /// Mutates the current Permissions object to remove the given permissions
+    sub(...perms: IntoPermissions[]): Permissions {
+        this.p = perms.reduce((perms: bigint, perm: IntoPermissions) => perms & ~into(perm), this.p);
+        return this;
+    }
+
+    /// Combines permission flags into a new Permissions object
+    union(...perms: IntoPermissions[]): Permissions {
+        return this.clone().add(...perms);
+    }
+
+    /// Subtracts permissions flags into a new Permissions object
+    diff(...perms: IntoPermissions[]): Permissions {
+        return this.clone().sub(...perms);
+    }
+
+    static union(...perms: IntoPermissions[]): Permissions {
+        return Permissions.EMPTY.union(...perms);
+    }
+
+    static EMPTY: Permissions = new Permissions();
+
+    toJSON(): string {
+        return this.p.toString();
+    }
+
+    static compute_base(roles: Role[]): Permissions {
+        // optimized loop, aside from the bigint parsing
+        return roles.reduce((perms, role) => (perms.p |= BigInt(role.permissions), perms), new Permissions())
+    }
+
+    compute_overwrites(overwrites: Overwrite[], roles: Snowflake[], user_id: Snowflake): Permissions {
+        let base = this.clone(), allow = new Permissions(), deny = allow.clone(), user_overwrite;
+
+        // overwrites are always sorted role-first
+        for(let overwrite of overwrites) {
+            if(roles.indexOf(overwrite.id) != -1) {
+                if(overwrite.deny) {
+                    deny.add(overwrite.deny);
+                }
+                if(overwrite.allow) {
+                    allow.add(overwrite.allow);
+                }
+            } else if(overwrite.id == user_id) {
+                user_overwrite = overwrite;
+                break;
+            }
+        }
+
+        base.sub(deny).add(allow);
+
+        if(user_overwrite) {
+            if(user_overwrite.deny) {
+                base.sub(user_overwrite.deny);
+            }
+            if(user_overwrite.allow) {
+                base.add(user_overwrite.allow);
+            }
+        }
+
+        return base;
+    }
+}
+
+export interface RawOverwrite {
+    id: Snowflake,
+    allow?: RawPermissions,
+    deny?: RawPermissions,
 }
 
 export interface Overwrite {
     id: Snowflake,
-    allow?: Permission,
-    deny?: Permission,
+    allow?: Permissions,
+    deny?: Permissions,
 }
 
-export const enum PartyPermissions {
-    CREATE_INVITE = 1 << 0,
-    KICK_MEMBERS = 1 << 1,
-    BAN_MEMBERS = 1 << 2,
-    ADMINISTRATOR = 1 << 3,
-    VIEW_AUDIT_LOG = 1 << 4,
-    VIEW_STATISTICS = 1 << 5,
-    MANAGE_PARTY = 1 << 6,
-    MANAGE_ROOMS = 1 << 7,
-    MANAGE_NICKNAMES = 1 << 8,
-    MANAGE_ROLES = 1 << 9,
-    MANAGE_WEBHOOKS = 1 << 10,
-    MANAGE_EMOJIS = 1 << 11,
-    MOVE_MEMBERS = 1 << 12,
-    CHANGE_NICKNAME = 1 << 13,
-    MANAGE_PERMS = 1 << 14,
+export const enum PermissionBit {
+    ADMINISTRATOR /*      */ = 0,
+    CREATE_INVITE /*      */ = 1,
+    KICK_MEMBERS /*       */ = 2,
+    BAN_MEMBERS /*        */ = 3,
+    VIEW_AUDIT_LOG /*     */ = 4,
+    VIEW_STATISTICS /*    */ = 5,
+    MANAGE_PARTY /*       */ = 6,
+    MANAGE_ROOMS /*       */ = 7,
+    MANAGE_NICKNAMES /*   */ = 8,
+    MANAGE_ROLES /*       */ = 9,
+    MANAGE_WEBHOOKS /*    */ = 10,
+    MANAGE_EMOJIS /*      */ = 11,
+    MOVE_MEMBERS /*       */ = 12,
+    CHANGE_NICKNAME /*    */ = 13,
+    MANAGE_PERMS /*       */ = 14,
 
-    PARTY_ALL = (1 << 15) - 1,
-}
+    VIEW_ROOM /*          */ = 30,
+    READ_MESSAGE_HISTORY/**/ = 31,
+    SEND_MESSAGES /*      */ = 32,
+    MANAGE_MESSAGES /*    */ = 33,
+    MUTE_MEMBERS /*       */ = 34,
+    DEAFEN_MEMBERS /*     */ = 35,
+    MENTION_EVERYONE /*   */ = 36,
+    USE_EXTERNAL_EMOTES /**/ = 37,
+    ADD_REACTIONS /*      */ = 38,
+    EMBED_LINKS /*        */ = 39,
+    ATTACH_FILES /*       */ = 40,
+    USE_SLASH_COMMANDS /* */ = 41,
+    SEND_TTS_MESSAGES /*  */ = 42,
+    /// Allows a user to add new attachments to
+    /// existing messages using the "edit" API
+    EDIT_NEW_ATTACHMENT /**/ = 43,
 
-export const enum RoomPermissions {
-    VIEW_ROOM = 1 << 0,
-    READ_MESSAGES = 1 << 1 | VIEW_ROOM,
-    SEND_MESSAGES = 1 << 2 | VIEW_ROOM,
-    MANAGE_MESSAGES = 1 << 3,
-    MUTE_MEMBERS = 1 << 4,
-    DEAFEN_MEMBERS = 1 << 5,
-    MENTION_EVERYONE = 1 << 6,
-    USE_EXTERNAL_EMOTES = 1 << 7,
-    ADD_REACTIONS = 1 << 8,
-    EMBED_LINKS = 1 << 9,
-    ATTACH_FILES = 1 << 10,
-    USE_SLASH_COMMANDS = 1 << 11,
-    SEND_TTS_MESSAGES = 1 << 12,
-    EDIT_NEW_ATTACHMENT = 1 << 13,
-
-    ROOM_ALL = (1 << 14) - 1,
-}
-
-export const enum StreamPermissions {
     /// Allows a user to broadcast a stream to this room
-    STREAM = 1 << 0,
+    STREAM /*             */ = 60,
     /// Allows a user to connect and watch/listen to streams in a room
-    CONNECT = 1 << 1,
+    CONNECT /*            */ = 61,
     /// Allows a user to speak in a room without broadcasting a stream
-    SPEAK = 1 << 2,
+    SPEAK /*              */ = 62,
     /// Allows a user to acquire priority speaker
-    PRIORITY_SPEAKER = 1 << 3,
-
-    STREAM_ALL = (1 << 4) - 1,
-}
-
-export function union(...perms: Array<Partial<Permission>>): Permission {
-    let result = { party: 0, room: 0, stream: 0 };
-
-    for(let perm of perms) {
-        result.party |= perm.party!;
-        result.room |= perm.room!;
-        result.stream |= perm.stream!;
-    }
-
-    return result;
-}
-
-export const EMPTY: Permission = union();
-
-export function difference(a: Permission, b: Permission): Permission {
-    return {
-        party: a.party & ~b.party,
-        room: a.room & ~b.room,
-        stream: a.stream & ~b.stream,
-    }
-}
-
-export function cond(value: boolean, p: Partial<Permission>): Partial<Permission> {
-    return value ? union(p) : EMPTY;
-}
-
-export function compute_overwrites(
-    base: Permission,
-    overwrites: Overwrite[],
-    roles: Snowflake[],
-    user_id: Snowflake,
-): Permission {
-    let allow = union(),
-        deny = union(),
-        user_overwrite;
-
-    // overwrites are always sorted role-first
-    for(let overwrite of overwrites) {
-        if(roles.indexOf(overwrite.id) != -1) {
-            if(overwrite.deny) {
-                deny = union(deny, overwrite.deny);
-            }
-            if(overwrite.allow) {
-                allow = union(allow, overwrite.allow);
-            }
-        } else if(overwrite.id == user_id) {
-            user_overwrite = overwrite;
-            break;
-        }
-    }
-
-    base = difference(base, deny);
-    base = union(base, allow);
-
-    if(user_overwrite) {
-        if(user_overwrite.deny) {
-            base = difference(base, user_overwrite.deny);
-        }
-
-        if(user_overwrite.allow) {
-            base = union(base, user_overwrite.allow);
-        }
-    }
-
-    return base;
+    PRIORITY_SPEAKER /*   */ = 63,
 }

@@ -1,5 +1,5 @@
 import { XHRMethod } from "../lib/fetch";
-import { EMPTY, Permission, union } from "../models/permission";
+import { IntoPermissions, Permissions } from "../models/permission";
 
 export const enum CommandFlags {
     HAS_BODY = 1 << 0,
@@ -20,7 +20,7 @@ export interface Command<F extends NonNullable<any>, R, B> {
     method: XHRMethod;
     flags: CommandFlags,
 
-    perms(this: CommandThis<F, R, B>): Permission;
+    perms(this: CommandThis<F, R, B>): Permissions;
     path(this: CommandThis<F, R, B>): string;
     headers(this: CommandThis<F, R, B>): { [name: string]: string },
     body(this: CommandThis<F, R, B>): B;
@@ -41,7 +41,7 @@ type BodyKeys<F, B> = keyof { [P in keyof F as F[P] extends B ? P : never]: any 
 // TODO: Better way to do this?
 export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms' | 'path' | 'body'> {
     // object literal of callback
-    perms: Partial<Permission> | ((this: CommandThis<F, R, B>) => Permission);
+    perms: IntoPermissions | ((this: CommandThis<F, R, B>) => IntoPermissions);
     // string literal or callback
     path: string | ((this: CommandThis<F, R, B>) => string);
     // Either key to a field or callback
@@ -51,7 +51,7 @@ export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms'
 const DEFAULT: Command<any, any, any> = {
     method: XHRMethod.GET,
     flags: 0,
-    perms: () => EMPTY,
+    perms: () => Permissions.EMPTY,
     path: () => "",
     headers: () => ({}),
     body: () => null,
@@ -78,7 +78,7 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
     }
 
     if(template.perms && typeof template.perms !== 'function') {
-        let perms = union(template.perms);
+        let perms = Permissions.union(template.perms);
         full_template.perms = () => perms;
     }
 

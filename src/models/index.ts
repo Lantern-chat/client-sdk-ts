@@ -3,8 +3,8 @@ export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type { AuthToken } from "./auth";
 export * as auth from "./auth";
 
-export type { Permission, Overwrite } from "./permission";
-import { Permission, Overwrite } from "./permission";
+export type { Permissions, Overwrite, PermissionBit } from "./permission";
+import type { RawPermissions, RawOverwrite } from "./permission";
 
 export * as perms from "./permission";
 
@@ -263,7 +263,7 @@ export interface Room {
     flags: number | RoomFlags,
     rate_limit_per_user?: number,
     parent_id?: Snowflake,
-    overwrites?: Overwrite[],
+    overwrites?: RawOverwrite[],
 }
 
 export const enum MessageFlags {
@@ -384,7 +384,7 @@ export interface Role {
     party_id: Snowflake,
     icon?: string,
     name: string,
-    permissions: Permission,
+    permissions: RawPermissions,
     color: number | null,
     position: number,
     flags: number,
