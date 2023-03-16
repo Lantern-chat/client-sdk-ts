@@ -62,7 +62,7 @@ export class Driver {
 
         if(body) {
             // clean any undefined values
-            Object.keys(body).forEach(key => body![key] === undefined && delete body![key]);
+            Object.keys(body).forEach(key => (body as any)[key] === undefined && delete (body as any)[key]);
 
             // serialize body to query string
             if(QUERY_METHODS.indexOf(cmd.method) != -1) {

@@ -2,6 +2,7 @@ import { XHRMethod } from "../lib/fetch";
 import { IntoPermissions, Permissions } from "../models/permission";
 
 export const enum CommandFlags {
+    None = 0,
     HAS_BODY = 1 << 0,
     HAS_RESPONSE = 1 << 1,
     UNAUTHORIZED = 1 << 2,
@@ -90,7 +91,7 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
     if(template.body && typeof template.body === 'string') {
         let field = template.body;
         // TODO: Figure out how to reconcile this[field]
-        full_template.body = function() { return this[field as any]; };
+        full_template.body = function() { return (this as any)[field as any]; };
     }
 
     if(template.parse) {
