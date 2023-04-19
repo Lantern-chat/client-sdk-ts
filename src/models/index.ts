@@ -18,6 +18,26 @@ import type { Embed } from "./embed";
 /// Snowflakes cannot be 0
 export type Snowflake = Exclude<string, "0" | 0>;
 
+export const LANTERN_EPOCH = 1550102400000;
+
+/**
+ * Extracts the unix timestamp (milliseconds) from a snowflake
+ * @param id Snowflake
+ * @returns number
+ */
+export function snowflake_unix(id: Snowflake): number {
+    return Number(BigInt(id) >> 22n) + LANTERN_EPOCH;
+}
+
+/**
+ * Create a snowflake from a unix timestamp (milliseconds)
+ * @param ms number
+ * @returns Snowflake
+ */
+export function unix_snowflake(ms: number): Snowflake {
+    return (BigInt(ms - LANTERN_EPOCH) << 22n).toString();
+}
+
 /// ISO 8601 timestamp
 export type Timestamp = string;
 
@@ -244,13 +264,25 @@ export interface Relationship {
     pending?: boolean,
 }
 
+export const enum RoomKind {
+    Text = 0,
+    DirectMessage = 1,
+    GroupMessage = 2,
+    Voice = 3,
+    Feed = 4,
+    // max value cannot exceed 15
+    __MAX,
+}
+
 export const enum RoomFlags {
-    Text = 1 << 0,
-    Direct = 1 << 1,
-    Voice = 1 << 2,
-    Group = 1 << 3,
+    Kind = 0xF, // first four bits are the kind
     Nsfw = 1 << 4,
     Default = 1 << 5,
+}
+
+export function room_kind(flags: RoomFlags & number): RoomKind {
+    let bits = flags & 0xF;
+    return bits < RoomKind.__MAX ? bits as RoomKind : RoomKind.Text;
 }
 
 export interface Room {
@@ -272,6 +304,10 @@ export const enum MessageFlags {
     MentionsHere = 1 << 2,
     TTS = 1 << 3,
     SupressEmbeds = 1 << 4,
+    HasLink = 1 << 5,
+
+    /// Set if the message has been starred by the user requesting it
+    Starred = 1 << 6,
 }
 
 export const enum MessageKind {
@@ -288,8 +324,7 @@ export interface Message {
     kind?: MessageKind,
     author: User,
     member?: PartialPartyMember,
-    thread_id?: Snowflake,
-    created_at: Timestamp,
+    parent?: Snowflake,
     edited_at?: Timestamp,
     content?: string,
     flags: number | MessageFlags,
@@ -300,7 +335,7 @@ export interface Message {
     attachments?: Attachment[],
     embeds?: Embed[],
     pins?: Snowflake[],
-    starred?: boolean,
+    score?: number,
 }
 
 export interface PinFolder {
