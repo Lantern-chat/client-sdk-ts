@@ -109,10 +109,15 @@ export type ServerMsg =
     | IServerMsg<ServerMsgOpcode.RelRemove, { user_id: Snowflake }>
     ;
 
+export interface ReadyParty {
+    party: Party,
+    me: PartyMember,
+}
+
 export interface ReadyEvent {
     user: User,
     dms: Room[],
-    parties: Party[],
+    parties: ReadyParty[],
     session: Snowflake,
 }
 
