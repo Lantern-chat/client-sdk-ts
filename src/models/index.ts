@@ -300,14 +300,16 @@ export interface Room {
 
 export const enum MessageFlags {
     Deleted = 1 << 0,
-    MentionsEveryone = 1 << 1,
-    MentionsHere = 1 << 2,
-    TTS = 1 << 3,
-    SupressEmbeds = 1 << 4,
-    HasLink = 1 << 5,
+    Removed = 1 << 1,
+    Retained = 1 << 2,
+
+    MentionsEveryone = 1 << 3,
+    MentionsHere = 1 << 4,
+    TTS = 1 << 5,
+    SupressEmbeds = 1 << 10,
 
     /// Set if the message has been starred by the user requesting it
-    Starred = 1 << 6,
+    Starred = 1 << 12,
 }
 
 export const enum MessageKind {
@@ -414,6 +416,11 @@ export interface Invite {
     remaining?: number,
 }
 
+export const enum RoleFlags {
+    Hoist = 1 << 0,
+    Mentionable = 1 << 1,
+}
+
 export interface Role {
     id: Snowflake,
     party_id: Snowflake,
@@ -422,7 +429,7 @@ export interface Role {
     permissions: RawPermissions,
     color: number | null,
     position: number,
-    flags: number,
+    flags: RoleFlags,
 }
 
 export interface CustomEmote {

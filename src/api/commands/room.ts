@@ -34,16 +34,12 @@ export const CreateMessage = /*#__PURE__*/command.post<{ room_id: Snowflake, msg
     }
 });
 
-export const GetMessage = /*#__PURE__*/command<{ room_id: Snowflake, msg_id: Snowflake }, Message>({
-    perms: PermissionBit.READ_MESSAGE_HISTORY,
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
-});
-
 export type GetMessagesBody = Partial<Cursor> & {
-    thread?: Snowflake,
+    parent?: Snowflake,
     limit?: number,
     pinned?: boolean,
     starred?: boolean,
+    recurse?: number,
 }
 
 export const GetMessages = /*#__PURE__*/command<{ room_id: Snowflake, query: GetMessagesBody }, Array<Message>, GetMessagesBody>({

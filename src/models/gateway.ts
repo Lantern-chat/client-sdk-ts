@@ -152,7 +152,6 @@ export interface RoomDeleteEvent {
 export interface MessageDeleteEvent {
     id: Snowflake,
     room_id: Snowflake,
-    user_id: Snowflake,
     party_id?: Snowflake,
 }
 
