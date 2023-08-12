@@ -1,19 +1,19 @@
 import { command } from "../command";
 import type { Party, PartyMember, Room, Snowflake, Invite, UserProfile, Role, RoleFlags, Permissions } from "../../models";
 
-export const GetParty = /*#__PURE__*/command<{ party_id: Snowflake }, Party>({
+export const GetParty = /*#__PURE__*/command.get<{ party_id: Snowflake; }, Party>({
     path() { return `/party/${this.party_id}`; }
 });
 
-export const GetPartyMembers = /*#__PURE__*/command<{ party_id: Snowflake }, Array<PartyMember>>({
+export const GetPartyMembers = /*#__PURE__*/command.get<{ party_id: Snowflake; }, Array<PartyMember>>({
     path() { return `/party/${this.party_id}/members`; }
 });
 
-export const GetPartyRooms = /*#__PURE__*/command<{ party_id: Snowflake }, Array<Room>>({
+export const GetPartyRooms = /*#__PURE__*/command.get<{ party_id: Snowflake; }, Array<Room>>({
     path() { return `/party/${this.party_id}/rooms`; }
 });
 
-export const GetPartyInvites = /*#__PURE__*/command<{ party_id: Snowflake }, Array<Invite>>({
+export const GetPartyInvites = /*#__PURE__*/command.get<{ party_id: Snowflake; }, Array<Invite>>({
     path() { return `/party/${this.party_id}/invites`; }
 });
 
@@ -23,15 +23,17 @@ export interface CreatePartyInviteForm {
     description?: string,
 }
 
-export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake }, Invite, CreatePartyInviteForm>({
+export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake; }, Invite, CreatePartyInviteForm>({
+    parse: command.parse,
     path() { return `/party/${this.party_id}/invites`; }
 });
 
-export const GetMember = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake }, PartyMember>({
+export const GetMember = /*#__PURE__*/command.get<{ user_id: Snowflake, party_id: Snowflake; }, PartyMember>({
     path() { return `/party/${this.party_id}/members/${this.user_id}`; }
 });
 
-export const UpdateMemberProfile = /*#__PURE__*/command.patch<{ party_id: Snowflake, profile: UserProfile }, UserProfile, UserProfile>({
+export const UpdateMemberProfile = /*#__PURE__*/command.patch<{ party_id: Snowflake, profile: UserProfile; }, UserProfile, UserProfile>({
+    parse: command.parse,
     path() { return `/party/${this.party_id}/members/profile`; },
     body: 'profile',
 });
@@ -49,16 +51,18 @@ export interface PatchRoleForm {
     position?: number,
 }
 
-export const CreateRole = /*#__PURE__*/command.post<{ party_id: Snowflake, role: CreateRoleForm }, Role, CreateRoleForm>({
+export const CreateRole = /*#__PURE__*/command.post<{ party_id: Snowflake, role: CreateRoleForm; }, Role, CreateRoleForm>({
+    parse: command.parse,
     path() { return `/party/${this.party_id}/roles`; },
     body: 'role',
 });
 
-export const PatchRole = /*#__PURE__*/command.patch<{ party_id: Snowflake, role_id: Snowflake, role: PatchRoleForm }, Role, PatchRoleForm>({
+export const PatchRole = /*#__PURE__*/command.patch<{ party_id: Snowflake, role_id: Snowflake, role: PatchRoleForm; }, Role, PatchRoleForm>({
+    parse: command.parse,
     path() { return `/party/${this.party_id}/roles/${this.role_id}`; },
     body: 'role',
 });
 
-export const DeleteRole = /*#__PURE__*/command.del<{ party_id: Snowflake, role_id: Snowflake }>({
+export const DeleteRole = /*#__PURE__*/command.del<{ party_id: Snowflake, role_id: Snowflake; }>({
     path() { return `/party/${this.party_id}/roles/${this.role_id}`; },
 });

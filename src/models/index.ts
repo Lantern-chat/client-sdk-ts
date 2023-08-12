@@ -301,7 +301,7 @@ export interface Room {
 export const enum MessageFlags {
     Deleted = 1 << 0,
     Removed = 1 << 1,
-    Retained = 1 << 2,
+    Parent = 1 << 2,
 
     MentionsEveryone = 1 << 3,
     MentionsHere = 1 << 4,

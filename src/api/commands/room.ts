@@ -21,7 +21,7 @@ export interface GetReactionsQuery {
     limit?: number,
 }
 
-export const CreateMessage = /*#__PURE__*/command.post<{ room_id: Snowflake, msg: CreateMessageBody }, Message, CreateMessageBody>({
+export const CreateMessage = /*#__PURE__*/command.post<{ room_id: Snowflake, msg: CreateMessageBody; }, Message, CreateMessageBody>({
     parse: command.parse,
     path() { return `/room/${this.room_id}/messages`; },
     body: "msg",
@@ -40,41 +40,41 @@ export type GetMessagesBody = Partial<Cursor> & {
     pinned?: boolean,
     starred?: boolean,
     recurse?: number,
-}
+};
 
-export const GetMessages = /*#__PURE__*/command<{ room_id: Snowflake, query: GetMessagesBody }, Array<Message>, GetMessagesBody>({
+export const GetMessages = /*#__PURE__*/command.get<{ room_id: Snowflake, query: GetMessagesBody; }, Array<Message>, GetMessagesBody>({
     perms: PermissionBit.READ_MESSAGE_HISTORY,
     path() { return `/room/${this.room_id}/messages`; },
     body: "query",
 });
 
-export const StartTyping = /*#__PURE__*/command.post<{ room_id: Snowflake }>({
+export const StartTyping = /*#__PURE__*/command.post<{ room_id: Snowflake; }>({
     perms: PermissionBit.SEND_MESSAGES,
     path() { return `/room/${this.room_id}/typing`; }
 });
 
-export const DeleteMessage = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake }>({
+export const DeleteMessage = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake; }>({
     perms: PermissionBit.READ_MESSAGE_HISTORY,
     path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
 });
 
-export const PutReaction = /*#__PURE__*/command.put<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji }>({
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/@me` }
+export const PutReaction = /*#__PURE__*/command.put<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji; }>({
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/@me`; }
 });
 
-export const DeleteOwnReaction = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji }>({
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/@me` }
+export const DeleteOwnReaction = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji; }>({
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/@me`; }
 });
 
-export const DeleteUserReaction = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji, user_id: Snowflake }>({
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/${this.user_id}` }
+export const DeleteUserReaction = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji, user_id: Snowflake; }>({
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}/${this.user_id}`; }
 });
 
-export const DeleteAllReactions = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake }>({
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions` }
+export const DeleteAllReactions = /*#__PURE__*/command.del<{ room_id: Snowflake, msg_id: Snowflake; }>({
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions`; }
 });
 
-export const GetReactions = /*#__PURE__*/command<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji, query: GetReactionsQuery }, Array<Reaction>, GetReactionsQuery>({
-    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}` },
+export const GetReactions = /*#__PURE__*/command.get<{ room_id: Snowflake, msg_id: Snowflake, e: EmoteOrEmoji, query: GetReactionsQuery; }, Array<Reaction>, GetReactionsQuery>({
+    path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${encode_emote_or_emoji(this.e)}`; },
     body: "query",
 });

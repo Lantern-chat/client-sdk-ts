@@ -67,6 +67,8 @@ export class GatewaySocket extends MicroEmitter<{
      * @returns Promise<void, GatewayError>
      */
     connect(uri: string): Promise<void> {
+        this.close();
+
         let ws = this.ws = new WebSocket(uri);
         ws.binaryType = 'arraybuffer';
 
@@ -94,16 +96,14 @@ export class GatewaySocket extends MicroEmitter<{
 
         return new Promise((resolve, reject) => {
             let resolve_open = this.once('open', () => {
-                resolve();
-                this.off('error', resolve_err); // cleanup the other
+                resolve(); this.off('error', resolve_err); // cleanup the other
             }), resolve_err = this.once('error', (err: GatewayError) => {
-                reject(err);
-                this.off('open', resolve_open); // cleanup the other
+                reject(err); this.off('open', resolve_open); // cleanup the other
             });
         });
     }
 
-    close() { this.ws?.close() }
+    close() { this.readyState <= 1 && this.ws?.close() }
 
     /**
      *
@@ -119,7 +119,6 @@ export class GatewaySocket extends MicroEmitter<{
             } catch(e) {
                 throw error(e);
             }
-
         } else {
             throw new GatewayError({ t: GatewayErrorKind.Disconnected });
         }
