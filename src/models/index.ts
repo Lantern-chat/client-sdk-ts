@@ -11,7 +11,7 @@ export * as perms from "./permission";
 export type { ServerMsg, ClientMsg } from "./gateway";
 export { ServerMsgOpcode, ClientMsgOpcode, Intent } from "./gateway";
 
-export { EmbedType, EmbedFlags } from "./embed"
+export { EmbedType, EmbedFlags } from "./embed";
 export type { Embed, EmbedV1, EmbedMedia, EmbedAuthor, EmbedField, EmbedFooter, EmbedProvider } from "./embed";
 import type { Embed } from "./embed";
 
@@ -41,10 +41,10 @@ export function unix_snowflake(ms: number): Snowflake {
 /// ISO 8601 timestamp
 export type Timestamp = string;
 
-export type Cursor = { after: Snowflake } | { before: Snowflake } | { exact: Snowflake };
+export type Cursor = { after: Snowflake; } | { before: Snowflake; } | { exact: Snowflake; };
 
 export interface ServerConfig {
-    hcaptcha_string: string,
+    hcaptcha_sitekey: string,
     cdn: string,
     min_age: number,
     secure: boolean,
@@ -173,7 +173,7 @@ export const FONT_NAMES: { [key in keyof typeof Font]: string } = {
     "ComicSans": "Comis Sans",
     "OpenDyslexic": "Open Dyslexic",
     "AtkinsonHyperlegible": "Atkinson Hyperlegible",
-}
+};
 
 export enum UserPreferenceFlags {
     ReduceAnimations = 1 << 0,
@@ -349,7 +349,7 @@ export interface PinFolder {
 
 export type Reaction = ReactionShorthand | ReactionFull;
 
-export type EmoteOrEmoji = { emote: Snowflake } | { emoji: string };
+export type EmoteOrEmoji = { emote: Snowflake; } | { emoji: string; };
 
 export type ReactionShorthand = EmoteOrEmoji & {
     me: boolean,
@@ -454,7 +454,7 @@ export const enum PresenceStatus {
     Offline,
 }
 
-export function parse_presence(p?: UserPresence): { status: PresenceStatus, is_mobile: boolean } {
+export function parse_presence(p?: UserPresence): { status: PresenceStatus, is_mobile: boolean; } {
     let status = PresenceStatus.Offline, is_mobile = false;
 
     if(p) {
