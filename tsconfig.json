@@ -2,9 +2,10 @@
     "compilerOptions": {
         "outDir": "dist",
         "module": "ESNext",
-        "target": "es2021",
+        "target": "es2023",
         "lib": [
             "es6",
+            "es2023",
             "dom"
         ],
         "declaration": true,

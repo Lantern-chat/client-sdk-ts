@@ -20,8 +20,8 @@ export interface HttpError {
 
 export type DriverErrors =
     | HttpError
-    | { code: DriverErrorCode.MissingResponse }
-    | { code: DriverErrorCode.MissingAuthorization };
+    | { code: DriverErrorCode.MissingResponse; }
+    | { code: DriverErrorCode.MissingAuthorization; };
 
 export class DriverError {
     error: DriverErrors;
@@ -53,7 +53,7 @@ export class Driver {
     }
 
     async execute<R>(cmd: Command<any, R, any>): Promise<R> {
-        if(!this.auth && (cmd.flags & CommandFlags.UNAUTHORIZED) == 0) {
+        if(!this.auth && (cmd.flags & CommandFlags.AUTHORIZED) != 0) {
             throw new DriverError({ code: DriverErrorCode.MissingAuthorization });
         }
 
