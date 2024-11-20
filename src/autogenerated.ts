@@ -970,7 +970,7 @@ export interface HeartbeatPayload {
 }
 
 /** Raw base64-encoded auth tokens for users and bots. */
-export type AuthToken = string;
+export type RawAuthToken = string;
 
 /** Bitflags for Intent */
 export const enum Intent {
@@ -1056,7 +1056,7 @@ export const enum Intent {
 }
 
 export interface Identify {
-    auth: AuthToken,
+    auth: RawAuthToken,
     intent: Intent,
 }
 
@@ -1092,6 +1092,82 @@ export type ClientMsg =
     | { o: ClientMsgOpcode.Subscribe, p: SubscribePayload, }
     | { o: ClientMsgOpcode.Unsubscribe, p: UnsubscribePayload, };
 
+/** Standard API error codes. */
+export enum ApiErrorCode {
+    DbError = 50001,
+    JoinError = 50002,
+    SemaphoreError = 50003,
+    HashError = 50004,
+    JsonError = 50005,
+    EventEncodingError = 50006,
+    InternalError = 50007,
+    Utf8ParseError = 50008,
+    IOError = 50009,
+    InvalidHeaderValue = 50010,
+    XMLError = 50011,
+    RequestError = 50012,
+    Unimplemented = 50013,
+    BincodeError = 50014,
+    CborError = 50015,
+    RkyvEncodingError = 50016,
+    RpcClientError = 50017,
+    AlreadyExists = 40001,
+    UsernameUnavailable = 40002,
+    InvalidEmail = 40003,
+    InvalidUsername = 40004,
+    InvalidPassword = 40005,
+    InvalidCredentials = 40006,
+    InsufficientAge = 40007,
+    InvalidDate = 40008,
+    InvalidContent = 40009,
+    InvalidName = 40010,
+    InvalidTopic = 40011,
+    MissingUploadMetadataHeader = 40012,
+    MissingAuthorizationHeader = 40013,
+    NoSession = 40014,
+    InvalidAuthFormat = 40015,
+    HeaderParseError = 40016,
+    MissingFilename = 40017,
+    MissingMime = 40018,
+    AuthTokenError = 40019,
+    Base64DecodeError = 40020,
+    BodyDeserializeError = 40021,
+    QueryParseError = 40022,
+    UploadError = 40023,
+    InvalidPreview = 40024,
+    MimeParseError = 40025,
+    InvalidImageFormat = 40026,
+    TOTPRequired = 40027,
+    InvalidPreferences = 40028,
+    TemporarilyDisabled = 40029,
+    InvalidCaptcha = 40030,
+    Base85DecodeError = 40031,
+    WebsocketError = 40032,
+    MissingContentTypeHeader = 40033,
+    Blocked = 40034,
+    Banned = 40035,
+    SearchError = 40036,
+    IncorrectRpcEndpoint = 40047,
+    BadRequest = 40400,
+    Unauthorized = 40401,
+    NotFound = 40404,
+    MethodNotAllowed = 40405,
+    RequestTimeout = 40408,
+    Conflict = 40409,
+    RequestEntityTooLarge = 40413,
+    UnsupportedMediaType = 40415,
+    ChecksumMismatch = 40460,
+    Unknown = 1,
+}
+
+/** Standard API error response, containing an error code and message. */
+export interface RawApiError {
+    /** Error code */
+    code: ApiErrorCode,
+    /** Human-readable error message */
+    message: string,
+}
+
 /** Bitflags for CommandFlags */
 export const enum CommandFlags {
     /** Command requires authorization to execute. */
@@ -1099,11 +1175,12 @@ export const enum CommandFlags {
     /** Command has a request body. */
     HAS_BODY = 0x2,
     HAS_RESPONSE = 0x4,
-    BOTS_ONLY = 0x8,
-    USERS_ONLY = 0x10,
-    ADMIN_ONLY = 0x20,
+    STREAMING = 0x8,
+    BOTS_ONLY = 0x20,
+    USERS_ONLY = 0x40,
+    ADMIN_ONLY = 0x80,
     /** All bitflags of CommandFlags */
-    ALL = 0x3f,
+    ALL = 0xef,
 }
 
 export interface ServerLimits {
@@ -1132,8 +1209,8 @@ export interface ServerConfig {
 
 /** Gets the global server configuration */
 export const GetServerConfig = /*#__PURE__*/command.get<{}, ServerConfig, null>({
-    parse: true,
     path: "/config",
+    flags: CommandFlags.HAS_RESPONSE,
 });
 
 export interface BuildInfo {
@@ -1148,8 +1225,8 @@ export interface BuildInfo {
  * reporting issues. This may not be consistent across all nodes or invocations.
  */
 export const GetBuildInfo = /*#__PURE__*/command.get<{}, BuildInfo, null>({
-    parse: true,
     path: "/build_info",
+    flags: CommandFlags.HAS_RESPONSE,
 });
 
 export interface CreateFileBody {
@@ -1162,9 +1239,8 @@ export interface CreateFileBody {
 }
 
 export const CreateFile = /*#__PURE__*/command.post<{ body: CreateFileBody, }, Snowflake, CreateFileBody>({
-    parse: true,
     path: "/file",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export interface FilesystemStatus {
@@ -1173,9 +1249,8 @@ export interface FilesystemStatus {
 }
 
 export const GetFilesystemStatus = /*#__PURE__*/command.options<{}, FilesystemStatus, null>({
-    parse: true,
     path: "/file",
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export interface FileStatus {
@@ -1184,15 +1259,13 @@ export interface FileStatus {
 }
 
 export const GetFileStatus = /*#__PURE__*/command.head<{ file_id: Snowflake, }, FileStatus, null>({
-    parse: true,
     path() { return `/file/${this.file_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export const GetParty = /*#__PURE__*/command.get<{ party_id: Snowflake, }, Party, null>({
-    parse: true,
     path() { return `/party/${this.party_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export interface CreatePartyForm {
@@ -1202,9 +1275,8 @@ export interface CreatePartyForm {
 }
 
 export const CreateParty = /*#__PURE__*/command.post<{ body: CreatePartyForm, }, Party, CreatePartyForm>({
-    parse: true,
     path: "/party",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const enum BannerAlign {
@@ -1224,9 +1296,8 @@ export interface PatchPartyForm {
 }
 
 export const PatchParty = /*#__PURE__*/command.patch<{ party_id: Snowflake, body: PatchPartyForm, }, Party, PatchPartyForm>({
-    parse: true,
     path() { return `/party/${this.party_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const DeleteParty = /*#__PURE__*/command.delete<{ party_id: Snowflake, }, null, null>({
@@ -1252,9 +1323,8 @@ export interface CreateRoleForm {
 }
 
 export const CreateRole = /*#__PURE__*/command.post<{ party_id: Snowflake, body: CreateRoleForm, }, Role, CreateRoleForm>({
-    parse: true,
     path() { return `/party/${this.party_id}/roles`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export interface PatchRoleForm {
@@ -1267,9 +1337,8 @@ export interface PatchRoleForm {
 }
 
 export const PatchRole = /*#__PURE__*/command.patch<{ party_id: Snowflake, role_id: Snowflake, body: PatchRoleForm, }, Role, PatchRoleForm>({
-    parse: true,
     path() { return `/party/${this.party_id}/roles/${this.role_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const DeleteRole = /*#__PURE__*/command.delete<{ party_id: Snowflake, role_id: Snowflake, }, null, null>({
@@ -1278,21 +1347,18 @@ export const DeleteRole = /*#__PURE__*/command.delete<{ party_id: Snowflake, rol
 });
 
 export const GetPartyMembers = /*#__PURE__*/command.get<{ party_id: Snowflake, }, PartyMember, null>({
-    parse: true,
     path() { return `/party/${this.party_id}/members`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING,
 });
 
 export const GetPartyMember = /*#__PURE__*/command.get<{ party_id: Snowflake, member_id: Snowflake, }, PartyMember, null>({
-    parse: true,
     path() { return `/party/${this.party_id}/member/${this.member_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export const GetPartyRooms = /*#__PURE__*/command.get<{ party_id: Snowflake, }, Room, null>({
-    parse: true,
     path() { return `/party/${this.party_id}/rooms`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING,
 });
 
 export interface Invite {
@@ -1311,15 +1377,13 @@ export interface Invite {
 }
 
 export const GetPartyInvites = /*#__PURE__*/command.get<{ party_id: Snowflake, }, Invite, null>({
-    parse: true,
     path() { return `/party/${this.party_id}/invites`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING,
 });
 
 export const GetMemberProfile = /*#__PURE__*/command.get<{ party_id: Snowflake, user_id: Snowflake, }, UserProfile, null>({
-    parse: true,
     path() { return `/party/${this.party_id}/members/${this.user_id}/profile`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export interface UpdateUserProfileBody {
@@ -1336,9 +1400,8 @@ export interface UpdateUserProfileBody {
 export type UpdateMemberProfileBody = UpdateUserProfileBody;
 
 export const UpdateMemberProfile = /*#__PURE__*/command.patch<{ party_id: Snowflake, body: UpdateMemberProfileBody, }, UserProfile, UpdateMemberProfileBody>({
-    parse: true,
     path() { return `/party/${this.party_id}/members/profile`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 /** Infinite parameters may only be used with appropriate permissions */
@@ -1351,9 +1414,8 @@ export interface CreatePartyInviteBody {
 }
 
 export const CreatePartyInvite = /*#__PURE__*/command.post<{ party_id: Snowflake, body: CreatePartyInviteBody, }, Invite, CreatePartyInviteBody>({
-    parse: true,
     path() { return `/party/${this.party_id}/invites`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export interface CreatePinFolderForm {
@@ -1362,9 +1424,8 @@ export interface CreatePinFolderForm {
 }
 
 export const CreatePinFolder = /*#__PURE__*/command.post<{ party_id: Snowflake, body: CreatePinFolderForm, }, PinFolder, CreatePinFolderForm>({
-    parse: true,
     path() { return `/party/${this.party_id}/pins`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const enum CreateRoomKind {
@@ -1382,9 +1443,8 @@ export interface CreateRoomForm {
 }
 
 export const CreateRoom = /*#__PURE__*/command.post<{ party_id: Snowflake, body: CreateRoomForm, }, Room, CreateRoomForm>({
-    parse: true,
     path() { return `/party/${this.party_id}/rooms`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export interface SearchQuery {
@@ -1407,9 +1467,8 @@ export interface CreateMessageBody {
 
 /** Create message command */
 export const CreateMessage = /*#__PURE__*/command.post<{ room_id: Snowflake, body: CreateMessageBody, }, Message, CreateMessageBody>({
-    parse: true,
     path() { return `/room/${this.room_id}/messages`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export interface EditMessageBody {
@@ -1418,9 +1477,8 @@ export interface EditMessageBody {
 }
 
 export const EditMessage = /*#__PURE__*/command.patch<{ room_id: Snowflake, msg_id: Snowflake, body: EditMessageBody, }, Message, EditMessageBody>({
-    parse: true,
     path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const DeleteMessage = /*#__PURE__*/command.delete<{ room_id: Snowflake, msg_id: Snowflake, }, null, null>({
@@ -1429,9 +1487,8 @@ export const DeleteMessage = /*#__PURE__*/command.delete<{ room_id: Snowflake, m
 });
 
 export const GetMessage = /*#__PURE__*/command.get<{ room_id: Snowflake, msg_id: Snowflake, }, Message, null>({
-    parse: true,
     path() { return `/room/${this.room_id}/messages/${this.msg_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export interface StartTypingBody {
@@ -1472,9 +1529,8 @@ export type GetMessagesQuery = Partial<Cursor> & {
 };
 
 export const GetMessages = /*#__PURE__*/command.get<{ room_id: Snowflake, body: GetMessagesQuery, }, Message, GetMessagesQuery>({
-    parse: true,
     path() { return `/room/${this.room_id}/messages`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING,
 });
 
 export const PinMessage = /*#__PURE__*/command.put<{ room_id: Snowflake, msg_id: Snowflake, pin_tag: Snowflake, }, null, null>({
@@ -1524,7 +1580,7 @@ export interface GetReactionsForm {
 
 export const GetReactions = /*#__PURE__*/command.get<{ room_id: Snowflake, msg_id: Snowflake, emote_id: EmoteOrEmoji, body: GetReactionsForm, }, null, GetReactionsForm>({
     path() { return `/room/${this.room_id}/messages/${this.msg_id}/reactions/${this.emote_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.STREAMING,
 });
 
 export interface FullRoom extends Room {
@@ -1532,9 +1588,8 @@ export interface FullRoom extends Room {
 }
 
 export const GetRoom = /*#__PURE__*/command.get<{ room_id: Snowflake, }, FullRoom, null>({
-    parse: true,
     path() { return `/room/${this.room_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 /** `Nullable::Undefined` or `Option::None` fields indicate no change */
@@ -1549,9 +1604,8 @@ export interface PatchRoomForm {
 }
 
 export const PatchRoom = /*#__PURE__*/command.patch<{ room_id: Snowflake, body: PatchRoomForm, }, FullRoom, PatchRoomForm>({
-    parse: true,
     path() { return `/room/${this.room_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 export const DeleteRoom = /*#__PURE__*/command.delete<{ room_id: Snowflake, }, null, null>({
@@ -1574,15 +1628,14 @@ export interface UserRegisterForm {
 
 export interface Session {
     /** Auth token encoded as base-64 */
-    auth: AuthToken,
+    auth: RawAuthToken,
     /** Expiration timestamp encoded with RFC 3339 */
     expires: Timestamp,
 }
 
 export const UserRegister = /*#__PURE__*/command.post<{ body: UserRegisterForm, }, Session, UserRegisterForm>({
-    parse: true,
     path: "/user",
-    flags: CommandFlags.HAS_BODY | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE | CommandFlags.USERS_ONLY,
 });
 
 export interface UserLoginForm {
@@ -1595,9 +1648,8 @@ export interface UserLoginForm {
 }
 
 export const UserLogin = /*#__PURE__*/command.post<{ body: UserLoginForm, }, Session, UserLoginForm>({
-    parse: true,
     path: "/user/@me",
-    flags: CommandFlags.HAS_BODY | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE | CommandFlags.USERS_ONLY,
 });
 
 export const UserLogout = /*#__PURE__*/command.delete<{}, null, null>({
@@ -1612,16 +1664,15 @@ export interface Enable2FAForm {
 }
 
 export interface Added2FA {
-    /** URL to be display as a QR code and added to an authenticator app */
+    /** URL to be displayed as a QR code and added to an authenticator app */
     url: string,
     /** Backup codes to be stored in a safe place */
     backup: Array<string>,
 }
 
 export const Enable2FA = /*#__PURE__*/command.post<{ body: Enable2FAForm, }, Added2FA, Enable2FAForm>({
-    parse: true,
     path: "/user/@me/2fa",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE | CommandFlags.USERS_ONLY,
 });
 
 export interface Confirm2FAForm {
@@ -1664,9 +1715,8 @@ export interface AnonymousSession {
 }
 
 export const GetSessions = /*#__PURE__*/command.get<{}, AnonymousSession, null>({
-    parse: true,
     path: "/user/@me/sessions",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING | CommandFlags.USERS_ONLY,
 });
 
 export interface ClearSessionsForm {
@@ -1680,9 +1730,8 @@ export const ClearSessions = /*#__PURE__*/command.delete<{ body: ClearSessionsFo
 });
 
 export const GetRelationships = /*#__PURE__*/command.get<{}, Relationship, null>({
-    parse: true,
     path: "/user/@me/relationships",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE | CommandFlags.STREAMING | CommandFlags.USERS_ONLY,
 });
 
 export interface PatchRelationshipBody {
@@ -1693,22 +1742,19 @@ export interface PatchRelationshipBody {
 }
 
 export const PatchRelationship = /*#__PURE__*/command.patch<{ user_id: Snowflake, body: PatchRelationshipBody, }, Relationship, PatchRelationshipBody>({
-    parse: true,
     path() { return `/user/@me/relationships/${this.user_id}`; },
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.USERS_ONLY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE | CommandFlags.USERS_ONLY,
 });
 
 export const UpdateUserProfile = /*#__PURE__*/command.patch<{ body: UpdateUserProfileBody, }, UserProfile, UpdateUserProfileBody>({
-    parse: true,
     path: "/user/@me/profile",
-    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_BODY | CommandFlags.HAS_RESPONSE,
 });
 
 /** Fetches full user information, including profile data */
 export const GetUser = /*#__PURE__*/command.get<{ user_id: Snowflake, }, User, null>({
-    parse: true,
     path() { return `/user/${this.user_id}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export type UpdateUserPrefsBody = UserPreferences;
@@ -1719,9 +1765,8 @@ export const UpdateUserPrefs = /*#__PURE__*/command.patch<{ body: UpdateUserPref
 });
 
 export const GetInvite = /*#__PURE__*/command.get<{ code: string, }, Invite, null>({
-    parse: true,
     path() { return `/invite/${this.code}`; },
-    flags: CommandFlags.AUTHORIZED,
+    flags: CommandFlags.AUTHORIZED | CommandFlags.HAS_RESPONSE,
 });
 
 export const RevokeInvite = /*#__PURE__*/command.delete<{ code: string, }, null, null>({

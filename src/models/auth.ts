@@ -1,3 +1,5 @@
+import type { RawAuthToken } from ".";
+
 class GenericToken {
     token: string;
     prefix: string;
@@ -20,12 +22,13 @@ class GenericToken {
 
 export class BearerToken extends GenericToken {
     /** Throws `RangeError` if the given token is the incorrect length  */
-    constructor(token: string) { super(token, 28, "Bearer") }
+    constructor(token: RawAuthToken) { super(token, 28, "Bearer"); }
 }
 
 export class BotToken extends GenericToken {
     /** Throws `RangeError` if the given token is the incorrect length  */
-    constructor(token: string) { super(token, 48, "Bot") }
+    constructor(token: RawAuthToken) { super(token, 48, "Bot"); }
 }
 
+/** Strict AuthToken type that can be formatted into an Authorization header. */
 export type AuthToken = BearerToken | BotToken;

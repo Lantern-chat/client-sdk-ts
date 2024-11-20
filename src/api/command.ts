@@ -21,7 +21,7 @@ export interface Command<F extends NonNullable<any>, R, B> {
     path(this: CommandThis<F, R, B>): string;
     headers(this: CommandThis<F, R, B>): { [name: string]: string; },
     body(this: CommandThis<F, R, B>): B;
-    parse: ((this: CommandThis<F, R, B>, req: XMLHttpRequest) => (R | undefined));
+    parse(this: CommandThis<F, R, B>, req: XMLHttpRequest): R | undefined;
 }
 
 function defaultParse<B>(req: XMLHttpRequest): B | undefined {
@@ -43,8 +43,6 @@ export interface CommandTemplate<F, R, B> extends Omit<Command<F, R, B>, 'perms'
     path: string | ((this: CommandThis<F, R, B>) => string);
     // Either key to a field or callback
     body: BodyKeys<F, B> | ((this: CommandThis<F, R, B>) => B);
-
-    parse?: true;
 }
 
 const DEFAULT: Command<any, any, any> = {
@@ -86,13 +84,8 @@ export function command<F, R = null, B = null>(template: Partial<CommandTemplate
         full_template.path = () => path;
     }
 
-    if(template.parse) {
+    if((template.flags! | 0) & CommandFlags.HAS_RESPONSE) {
         full_template.parse = defaultParse;
-        full_template.flags |= CommandFlags.HAS_RESPONSE;
-    } else if(GET_METHODS.indexOf(full_template.method) != -1) {
-        // If method is GET, assume there is a body.
-        full_template.parse = defaultParse;
-        full_template.flags |= CommandFlags.HAS_RESPONSE;
     }
 
     return function(fields: Readonly<F>) {
